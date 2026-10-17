@@ -18,9 +18,9 @@ export async function renderHome(main, app) {
         },
     },
         full ? h('p.note', t('freeLimit')) : null,
-        field(t('inviteCode'), code),
-        h('div.row', joinBtn),
+        h('div.inline-form', code, joinBtn),
     );
+    code.setAttribute('aria-label', t('inviteCode'));
     if (full) { code.disabled = true; joinBtn.disabled = true; }
 
     let createBlock;

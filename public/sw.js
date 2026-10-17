@@ -1,6 +1,6 @@
 // Service worker de Ágora: abre sin red (la carcasa) y gestiona los clics en los avisos.
 // Firestore va por su cuenta (otro dominio), aquí solo se cachea la propia web.
-const CACHE = 'agora-v1';
+const CACHE = 'agora-v2';
 
 self.addEventListener('install', e => {
     e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/', '/manifest.webmanifest', '/icons/icon-192.png'])));

@@ -408,7 +408,9 @@ function renderSettings(body, ctx) {
     const nameBtn = h('button.btn.btn-sec', { type: 'submit' }, t('save'));
     const nameForm = h('form.form', {
         onsubmit: e => { e.preventDefault(); busy(nameBtn, async () => { await setMyName(gid, me.id, myName.value.trim()); app.clean(); toast(t('saved')); }); },
-    }, field(t('name'), myName), h('div.row', nameBtn));
+    }, myName, nameBtn);
+    nameForm.className = 'inline-form';
+    myName.setAttribute('aria-label', t('name'));
 
     let ownerForm = null;
     if (d.isOwner) {
@@ -418,12 +420,17 @@ function renderSettings(body, ctx) {
         const totalSeats = h('input', { type: 'number', min: 1, max: 1000, value: g.totalSeats || 11 });
         const chatHours = h('input', { type: 'number', min: 1, max: 168, value: g.chatHours || 24 });
         const bipartisan = h('input', { type: 'checkbox', checked: Boolean(g.bipartisan) });
+        // Los escaños totales solo importan con elecciones
+        const seatsField = field(t('totalSeats'), totalSeats);
+        const syncSeats = () => { seatsField.hidden = seatMode.value !== 'election'; };
+        seatMode.addEventListener('change', syncSeats);
+        syncSeats();
         const btn = h('button.btn', { type: 'submit' }, t('save'));
         const help = h('button.btn.btn-sec', {
             type: 'button',
             onclick: () => openWizard(s => {
                 seatMode.value = s.seatMode; discipline.value = s.discipline; totalSeats.value = s.totalSeats;
-                bipartisan.checked = s.bipartisan; chatHours.value = s.chatHours;
+                bipartisan.checked = s.bipartisan; chatHours.value = s.chatHours; syncSeats();
                 btn.closest('form').dispatchEvent(new Event('input', { bubbles: true }));
             }),
         }, t('helpMeChoose'));
@@ -444,7 +451,7 @@ function renderSettings(body, ctx) {
                 });
             },
         }, field(t('groupName'), name), h('div.row', help),
-        h('div.fields', field(t('seatModeLabel'), seatMode), field(t('totalSeats'), totalSeats), field(t('disciplineLabel'), discipline), field(t('chatHours'), chatHours)),
+        h('div.fields', field(t('seatModeLabel'), seatMode), seatsField, field(t('disciplineLabel'), discipline), field(t('chatHours'), chatHours)),
         h('label.check', bipartisan, t('bipartisan')),
         h('div.row', btn));
     }
