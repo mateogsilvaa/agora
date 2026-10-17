@@ -4,6 +4,7 @@ import { t } from '../i18n.js';
 import { h, mount, field, busy, toast } from '../ui.js';
 import { hemicycle } from '../hemicycle.js';
 import { peekInvite } from '../data.js';
+import { renderLanding } from './landing.js';
 
 const DEMO = [['#a8321f', 6], ['#b8730b', 3], ['#1d7a52', 4], ['#1d4e89', 7], ['#8d8a83', 1]]
     .flatMap(([color, n]) => Array.from({ length: n }, () => ({ color })));
@@ -49,12 +50,11 @@ export async function renderAuth(main, pendingCode) {
         }, t('forgot')) : null,
     );
 
-    mount(main,
-        h('div.hero', h('div.eyebrow', t('tagline')), h('h1', t('heroTitle')), h('p', t('heroText'))),
-        h('div.grid.grid-2',
+    // Invitado: directo al formulario. Si no, la portada completa con el formulario al final.
+    if (invite) {
+        return mount(main, h('div.grid.grid-2',
             form,
-            h('div', h('div.hemi-wrap', hemicycle(DEMO, { label: 'Ágora' })),
-                h('div.legend', [['#a8321f', 'PRG'], ['#b8730b', 'CEN'], ['#1d7a52', 'VRD'], ['#1d4e89', 'AZL']].map(([c, n]) => h('span', h('i.dot', { style: { background: c } }), n))))),
-        h('div.pitch', [['pitch1', 'pitch1t'], ['pitch2', 'pitch2t'], ['pitch3', 'pitch3t']].map(([a, b]) => h('div', h('b', t(a)), h('p', t(b))))),
-    );
+            h('div', h('div.hemi-wrap', hemicycle(DEMO, { label: 'Ágora' })), h('p.sub', { style: { textAlign: 'center' } }, t('heroText')))));
+    }
+    renderLanding(main, form);
 }

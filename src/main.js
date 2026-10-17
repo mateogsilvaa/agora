@@ -46,7 +46,7 @@ function header() {
             h('button', { onclick: () => signOut(auth) }, t('logout')))) : null;
 
     mount(top, h('nav.nav',
-        h('a.brand', { href: '#/' }, h('span.brand-mark', 'Á'), h('span.brand-name', 'Ágora')),
+        h('a.logo', { href: '#/', 'aria-label': 'Ágora' }, 'ÁGORA'),
         switcher,
         h('span.nav-sp'),
         langs,

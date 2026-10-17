@@ -43,7 +43,7 @@ export async function renderHome(main, app) {
                 seatMode.onchange();
                 name.focus();
             }),
-        }, '? ' + t('helpMeChoose'));
+        }, t('helpMeChoose'));
         createBlock = section(t('createGroup'), null, h('form.form', {
             onsubmit: e => {
                 e.preventDefault();
@@ -63,7 +63,7 @@ export async function renderHome(main, app) {
     }
 
     mount(main,
-        h('div.page-head', h('div', h('div.eyebrow', t('tagline')), h('h1', me.name))),
+        h('div.page-head', h('div', h('div.eyebrow', new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })), h('h1', me.name))),
         h('div.grid.grid-side',
             section(t('myGroups'), h('span', `${me.groups.length}/${me.premium ? '∞' : 1}`), list),
             h('div.stack', section(t('joinGroup'), null, joinForm), createBlock, section(t('notifications'), null, notifButton()))),

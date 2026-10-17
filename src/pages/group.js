@@ -11,6 +11,7 @@ import { renderVotes, renderNewVote, VotePage, isFinished } from './votes.js';
 import { renderPaper } from './paper.js';
 import { Chat } from './chat.js';
 import { openWizard } from '../wizard.js';
+import { openTutorial, tourSeen } from '../tutorial.js';
 import { markSeen, unreadCount, notifButton, hasSeenPaper } from '../notify.js';
 
 const ICONS = {
@@ -105,11 +106,14 @@ export class GroupPage {
             k === 'paper' && unread ? h('i.unread', unread) : null,
             k === 'votes' && liveVotes.length ? h('i.unread.red', '●') : null);
         const copy = h('button.btn.btn-sm', { onclick: () => shareInvite(g) }, t('share'));
+        const help = h('button.help-btn', { title: t('howItWorks'), onclick: () => openTutorial(this.gid, () => shareInvite(g)) }, '?');
+        // Primera vez en este grupo: mini tutorial
+        if (!tourSeen(this.gid) && !this.tourShown) { this.tourShown = true; setTimeout(() => openTutorial(this.gid, () => shareInvite(g)), 300); }
 
         const body = h('div');
         mount(main,
             liveVotes.length ? h('a.live-strip', { href: `#/g/${this.gid}/v/${liveVotes[0].id}` }, h('span.live', t('liveNow')), liveVotes[0].title) : null,
-            pageHead(t('seatMode_' + g.seatMode), g.name, null, h('span.invite', { title: t('inviteCode') }, g.code, copy)),
+            pageHead(t('seatMode_' + g.seatMode), g.name, null, h('div.row', h('span.invite', { title: t('inviteCode') }, g.code, copy), help)),
             h('nav.tabs', tabs.map(([k, label]) => tabLink(k, label))),
             h('nav.bottom-nav', tabs.map(([k, label]) => tabLink(k, label, true))),
             body,
@@ -147,19 +151,6 @@ export async function shareInvite(g) {
     document.body.append(sheet);
 }
 
-function firstSteps(ctx) {
-    const { d, gid } = ctx;
-    const steps = [
-        [d.members.length >= 2, 'step1', 'step1t', h('button.btn.btn-sm', { onclick: () => shareInvite(d.group) }, t('share'))],
-        [Boolean(d.party(d.mine?.partyId)), 'step2', 'step2t', h('a.btn.btn-sm.btn-sec', { href: `#/g/${gid}/parties` }, '→')],
-        [d.votes.length > 0, 'step3', 'step3t', h('a.btn.btn-sm.btn-sec', { href: `#/g/${gid}/new` }, '→')],
-        [hasSeenPaper(gid), 'step4', 'step4t', h('a.btn.btn-sm.btn-sec', { href: `#/g/${gid}/paper` }, '→')],
-    ];
-    if (steps.every(s => s[0])) return null;
-    return section(t('firstSteps'), h('span', `${steps.filter(s => s[0]).length}/4`),
-        h('ol.steps', steps.map(([done, a, b, btn]) => h(`li${done ? '.done' : ''}`,
-            h('div.grow', h('b', t(a)), h('span.small.muted', t(b))), done ? null : btn))));
-}
 function legend(d, members = d.members) {
     const items = d.parties.map(p => [p.color, p.short, d.partySeats[p.id] || 0]).filter(x => x[2] > 0);
     const indep = members.filter(m => !m.partyId || !d.party(m.partyId)).reduce((s, m) => s + (m.seats || 0), 0);
@@ -230,7 +221,6 @@ function renderChamber(body, ctx) {
     };
 
     mount(body,
-        firstSteps(ctx),
         h('div.stats',
             [[d.members.length, t('members')], [d.total, t('seats')], [d.total ? d.majority : '—', t('majority')],
                 [d.parties.length, t('parties')], [activeCoalitions.length, t('coalitions')]]
@@ -436,7 +426,7 @@ function renderSettings(body, ctx) {
                 bipartisan.checked = s.bipartisan; chatHours.value = s.chatHours;
                 btn.closest('form').dispatchEvent(new Event('input', { bubbles: true }));
             }),
-        }, '? ' + t('helpMeChoose'));
+        }, t('helpMeChoose'));
         ownerForm = h('form.form', {
             onsubmit: e => {
                 e.preventDefault();
