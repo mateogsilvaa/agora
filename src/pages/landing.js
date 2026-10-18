@@ -24,14 +24,14 @@ const COPY = {
         ],
         demoKicker: 'Pruébalo, no hace falta cuenta',
         demoQ: 'Forma gobierno en 2ºB',
-        demoNote: 'Hubo elecciones a delegado y nadie llegó a la mayoría: 25 escaños, hacen falta 13. Tú lideras Última Fila. Elige socios.',
+        demoNote: 'Te has presentado a delegado de 2ºB. Tu candidatura saca 7 de 25 escaños y hacen falta 13. Elige con quién pactas.',
         demoYou: 'tú', demoAsks: 'Pide',
         demoParties: [
-            ['Última Fila', 7, '#a8321f', null],
-            ['Los Puntuales', 8, '#1d4e89', 'que nunca haya examen en lunes'],
-            ['Los del Recreo', 5, '#1d7a52', '10 minutos más de recreo'],
-            ['Club de Debate', 3, '#b8730b', 'la portavocía de la clase'],
-            ['Marta, por libre', 2, '#6a3fa0', 'elegir el destino del viaje'],
+            ['Tu candidatura', 7, '#a8321f', null],
+            ['Los Puntuales', 8, '#1d4e89', 'la subdelegación para su candidata'],
+            ['Los del Recreo', 5, '#1d7a52', 'que el destino del viaje se vote en clase'],
+            ['Club de Debate', 3, '#b8730b', 'un debate antes de cada votación importante'],
+            ['Marta, por libre', 2, '#6a3fa0', 'llevar ella el bote de la clase'],
         ],
         demoNeed: n => `Te faltan ${n}`, demoGov: 'Hay gobierno', demoDeal: 'A cambio',
         demoSpare: x => `Te sobra ${x}: podrías gobernar sin ese apoyo y sin pagar lo que pide.`,
@@ -71,14 +71,14 @@ const COPY = {
         ],
         demoKicker: 'Try it, no account needed',
         demoQ: 'Form a government in Year 10',
-        demoNote: 'The class rep election left nobody with a majority: 25 seats, 13 needed. You lead the Back Row. Pick your partners.',
+        demoNote: 'You ran for class rep in Year 10. Your list wins 7 of 25 seats and 13 are needed. Pick who you make a deal with.',
         demoYou: 'you', demoAsks: 'Wants',
         demoParties: [
-            ['Back Row', 7, '#a8321f', null],
-            ['The Punctuals', 8, '#1d4e89', 'no exams on Mondays, ever'],
-            ['Break Time Crew', 5, '#1d7a52', '10 more minutes of break'],
-            ['Debate Club', 3, '#b8730b', 'to be the class spokesperson'],
-            ['Marta, on her own', 2, '#6a3fa0', 'to choose where the trip goes'],
+            ['Your list', 7, '#a8321f', null],
+            ['The Punctuals', 8, '#1d4e89', 'deputy rep for their candidate'],
+            ['Break Time Crew', 5, '#1d7a52', 'the class votes on the trip destination'],
+            ['Debate Club', 3, '#b8730b', 'a debate before every big vote'],
+            ['Marta, on her own', 2, '#6a3fa0', 'to look after the class kitty'],
         ],
         demoNeed: n => `${n} short`, demoGov: 'We have a government', demoDeal: 'In exchange',
         demoSpare: x => `You don't need ${x}: you could govern without them and without paying their price.`,
@@ -169,7 +169,9 @@ function demo(c) {
     const box = h('div.land-demo-body');
 
     const paint = () => {
-        const seats = parties.flatMap(([name, n, color], i) => Array.from({ length: n }, () => ({ color, title: name, dim: !picked.has(i) })));
+        // Como en una cámara de verdad: tu bloque junto a la izquierda (tú primero, luego tus socios) y el resto enfrente
+        const order = [0, ...[...picked].filter(i => i !== 0), ...parties.map((_, i) => i).filter(i => !picked.has(i))];
+        const seats = order.flatMap(i => { const [name, n, color] = parties[i]; return Array.from({ length: n }, () => ({ color, title: name, dim: !picked.has(i) })); });
         const sum = [...picked].reduce((s, i) => s + parties[i][1], 0);
         const gov = sum >= maj;
         // Socios que sobran: si se van, seguís llegando a la mayoría
@@ -212,13 +214,14 @@ export function renderLanding(main, form) {
         ticker(c.ticker),
         h('div.land-grid',
             demo(c),
-            h('section.land-how',
-                h('h2.land-h2', c.howTitle),
-                h('ol.land-steps', c.how.map(([a, b]) => h('li', h('b', a), h('span', b)))))),
-        h('section.land-uses',
-            h('h2.land-h2', c.usesTitle),
-            h('dl', c.uses.map(([a, b]) => [h('dt', a), h('dd', b)])),
-            h('p.land-paperline', c.paperLine)),
+            h('div.land-side',
+                h('section.land-how',
+                    h('h2.land-h2', c.howTitle),
+                    h('ol.land-steps', c.how.map(([a, b]) => h('li', h('b', a), h('span', b))))),
+                h('section.land-uses',
+                    h('h2.land-h2', c.usesTitle),
+                    h('dl', c.uses.map(([a, b]) => [h('dt', a), h('dd', b)])),
+                    h('p.land-paperline', c.paperLine)))),
         h('section.land-join', { id: 'join' },
             h('div', h('h2.land-h2', c.joinTitle), h('p', c.joinText)),
             form));

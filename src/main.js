@@ -5,7 +5,7 @@ import { t, lang, setLang } from './i18n.js';
 import { h, mount, loading, toast } from './ui.js';
 import { watchUser, ensureUser, pruneGroups, getGroups, peekInvite, joinGroup } from './data.js';
 import { watchAll } from './notify.js';
-import { setupPwa } from './install.js';
+import { setupPwa, canInstall, promptInstall } from './install.js';
 import { renderAuth } from './pages/auth.js';
 import { renderHome } from './pages/home.js';
 import { GroupPage } from './pages/group.js';
@@ -43,6 +43,7 @@ function header() {
         h('div.menu-pop.right',
             h('div.menu-head', h('b', app.me.name), h('span', app.me.email), h('span.badge' + (app.me.premium ? '.accent' : ''), app.me.premium ? t('premium') : t('free'))),
             h('a', { href: '#/' }, t('myGroups')),
+            canInstall() ? h('button', { onclick: () => promptInstall() }, t('installApp')) : null,
             h('button', { onclick: () => signOut(auth) }, t('logout')))) : null;
 
     mount(top, h('nav.nav',
@@ -110,7 +111,11 @@ async function autoJoin(code) {
     } finally { joining = false; render(); }
 }
 
-window.addEventListener('hashchange', () => { window.scrollTo(0, 0); header(); render(); });
+// Al cambiar de pantalla, un fundido corto (no en cada actualización en directo)
+window.addEventListener('hashchange', () => {
+    window.scrollTo(0, 0); header(); render();
+    main.classList.remove('nav-in'); void main.offsetWidth; main.classList.add('nav-in');
+});
 header();
 
 if (configured) {
