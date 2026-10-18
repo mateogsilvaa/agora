@@ -7,7 +7,7 @@ import {
 } from '../data.js';
 import { hemicycle, chamberSeats } from '../hemicycle.js';
 import { majorityOf, minimalWinning } from '../tally.js';
-import { renderVotes, renderNewVote, VotePage, isFinished } from './votes.js';
+import { renderVotes, renderNewVote, VotePage, isFinished, quickVote } from './votes.js';
 import { renderPaper } from './paper.js';
 import { Chat } from './chat.js';
 import { openWizard } from '../wizard.js';
@@ -44,7 +44,9 @@ export function derive(state, me) {
         const seats = ps.reduce((s, p) => s + (partySeats[p.id] || 0), 0);
         return { ps, seats, active: ps.length >= 2 && ps.every(p => c.signed.includes(p.leaderId)) };
     };
-    return { ...state, partySeats, total, majority: majorityOf(total), mine, party, memberName, isOwner, ledParty, coalitionInfo, coalitions };
+    // Grupos antiguos no tienen el campo: tenían partidos, así que cuentan como activados
+    const partiesOn = group.parties !== false;
+    return { ...state, partySeats, total, majority: majorityOf(total), mine, party, memberName, isOwner, ledParty, coalitionInfo, coalitions, partiesOn };
 }
 
 export class GroupPage {
@@ -99,7 +101,7 @@ export class GroupPage {
         const unread = unreadCount(this.gid, d.news, me.id);
         const liveVotes = d.votes.filter(v => v.mode === 'live' && v.status === 'open' && !isFinished(v));
 
-        const tabs = [['chamber', t('chamber')], ['parties', t('parties')], ['votes', t('votes')], ['paper', t('paper')], ['settings', t('settings')]];
+        const tabs = [['chamber', t('chamber')], d.partiesOn ? ['parties', t('parties')] : null, ['votes', t('votes')], ['paper', t('paper')], ['settings', t('settings')]].filter(Boolean);
         const active = { v: 'votes', new: 'votes', p: 'parties' }[tab] || tab;
         const tabLink = (k, label, withIcon) => h(`a${k === active ? '.on' : ''}`, { href: `#/g/${this.gid}/${k}` },
             withIcon ? icon(ICONS[k]) : null, h('span', label),
@@ -115,13 +117,13 @@ export class GroupPage {
             liveVotes.length ? h('a.live-strip', { href: `#/g/${this.gid}/v/${liveVotes[0].id}` }, h('span.live', t('liveNow')), liveVotes[0].title) : null,
             pageHead(t('seatMode_' + g.seatMode), g.name, null, h('div.row', h('span.invite', { title: t('inviteCode') }, g.code, copy), help)),
             h('nav.tabs', tabs.map(([k, label]) => tabLink(k, label))),
-            h('nav.bottom-nav', tabs.map(([k, label]) => tabLink(k, label, true))),
+            h('nav.bottom-nav', { style: { gridTemplateColumns: `repeat(${tabs.length}, 1fr)` } }, tabs.map(([k, label]) => tabLink(k, label, true))),
             body,
         );
 
         if (tab === 'parties') return renderParties(body, ctx);
         if (tab === 'p') return renderPartyHQ(body, ctx, route.arg);
-        if (tab === 'votes') return renderVotes(body, ctx);
+        if (tab === 'votes') { renderVotes(body, ctx); body.prepend(quickVote(ctx)); return; }
         if (tab === 'new') return renderNewVote(body, ctx, route.arg);
         if (tab === 'paper') return renderPaper(body, ctx);
         if (tab === 'settings') return renderSettings(body, ctx);
@@ -221,9 +223,10 @@ function renderChamber(body, ctx) {
     };
 
     mount(body,
+        quickVote(ctx),
         h('div.stats',
             [[d.members.length, t('members')], [d.total, t('seats')], [d.total ? d.majority : '—', t('majority')],
-                [d.parties.length, t('parties')], [activeCoalitions.length, t('coalitions')]]
+                ...(d.partiesOn ? [[d.parties.length, t('parties')], [activeCoalitions.length, t('coalitions')]] : [])]
                 .map(([n, l]) => h('div.stat', h('b', n), h('span', l)))),
         g.seatMode === 'election' && d.total === 0 ? h('p.note', t('firstElection')) : null,
         h('div.grid.grid-side',
@@ -243,11 +246,11 @@ function renderChamber(body, ctx) {
                                 }, t('kick')) : null) : null);
                         })))))),
             h('div.stack',
-                d.parties.length ? section(t('calculator'), null, calculator(ctx)) : null,
+                d.partiesOn && d.parties.length ? section(t('calculator'), null, calculator(ctx)) : null,
                 section(t('offices'), null, offices.length
                     ? h('ul.list', offices.map(([name, o]) => h('li', h('b.grow', name), h('span', o?.name || t('vacant')))))
                     : empty('—')),
-                section(t('coalitions'), h('a', { href: `#/g/${gid}/parties` }, '→'), d.coalitions.length
+                !d.partiesOn ? null : section(t('coalitions'), h('a', { href: `#/g/${gid}/parties` }, '→'), d.coalitions.length
                     ? h('ul.list', d.coalitions.map(c => coalitionItem(ctx, c, false)))
                     : empty(t('noCoalitions'))))),
     );
@@ -420,6 +423,7 @@ function renderSettings(body, ctx) {
         const totalSeats = h('input', { type: 'number', min: 1, max: 1000, value: g.totalSeats || 11 });
         const chatHours = h('input', { type: 'number', min: 1, max: 168, value: g.chatHours || 24 });
         const bipartisan = h('input', { type: 'checkbox', checked: Boolean(g.bipartisan) });
+        const partiesOn = h('input', { type: 'checkbox', checked: g.parties !== false });
         // Los escaños totales solo importan con elecciones
         const seatsField = field(t('totalSeats'), totalSeats);
         const syncSeats = () => { seatsField.hidden = seatMode.value !== 'election'; };
@@ -442,7 +446,7 @@ function renderSettings(body, ctx) {
                     await updateGroup(gid, {
                         name: name.value.trim(), seatMode: mode, discipline: discipline.value,
                         totalSeats: Number(totalSeats.value) || 11, chatHours: Math.min(168, Math.max(1, Number(chatHours.value) || 24)),
-                        bipartisan: bipartisan.checked,
+                        bipartisan: bipartisan.checked, parties: partiesOn.checked || seatMode.value === 'election',
                     });
                     if (name.value.trim() !== g.name) renameInvite(g.code, name.value.trim());
                     // Pasar a "1 persona = 1 escaño" iguala a todos
@@ -452,6 +456,7 @@ function renderSettings(body, ctx) {
             },
         }, field(t('groupName'), name), h('div.row', help),
         h('div.fields', field(t('seatModeLabel'), seatMode), seatsField, field(t('disciplineLabel'), discipline), field(t('chatHours'), chatHours)),
+        h('label.check', partiesOn, t('partiesOn')),
         h('label.check', bipartisan, t('bipartisan')),
         h('div.row', btn));
     }

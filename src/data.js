@@ -58,12 +58,12 @@ export async function getGroups(ids) {
 }
 
 // ---------- Grupos ----------
-export async function createGroup(me, { name, seatMode, discipline, totalSeats, bipartisan = false, chatHours = 24 }) {
-    if (!me.premium) throw fail(t('premiumOnly'));
+export async function createGroup(me, { name, seatMode, discipline, totalSeats, parties = false, bipartisan = false, chatHours = 24 }) {
+    if (!me.premium && me.groups.length >= 1) throw fail(t('freeLimit'));
     const g = doc(col('groups'));
     const code = randomId(6);
     const b = writeBatch(db);
-    b.set(g, { name, ownerId: me.id, code, seatMode, discipline, totalSeats: totalSeats || 11, offices: {}, chatHours, bipartisan, createdAt: serverTimestamp() });
+    b.set(g, { name, ownerId: me.id, code, seatMode, discipline, totalSeats: totalSeats || 11, offices: {}, chatHours, parties: parties || seatMode === 'election', bipartisan, createdAt: serverTimestamp() });
     b.set(ref('invites', code), { groupId: g.id, name });
     b.update(ref('users', me.id), { groups: arrayUnion(g.id) });
     b.set(ref('groups', g.id, 'members', me.id), { name: me.name, partyId: null, seats: seatMode === 'member' ? 1 : 0, joinedAt: serverTimestamp() });

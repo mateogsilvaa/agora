@@ -62,8 +62,9 @@ service cloud.firestore {
     // ---------- Grupos ----------
     match /groups/{gid} {
       allow read: if isMember(gid);
+      // Cualquiera puede crear grupos mientras le quepan en su cuenta (gratis: 1; premium: varios)
       allow create: if signedIn()
-        && userDoc(me()).premium == true
+        && getAfter(/databases/$(database)/documents/users/$(me())).data.groups.size() <= groupLimit(userDoc(me()))
         && data().ownerId == me()
         && validName(data().name, 60)
         && data().seatMode in ['member', 'election', 'manual']

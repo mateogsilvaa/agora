@@ -23,45 +23,57 @@ export async function renderHome(main, app) {
     code.setAttribute('aria-label', t('inviteCode'));
     if (full) { code.disabled = true; joinBtn.disabled = true; }
 
+    // Crear grupo: nombre y listo. Lo demás (escaños, disciplina, partidos…) en "Más opciones".
     let createBlock;
-    if (me.premium) {
-        const name = h('input', { name: 'name', required: true, maxLength: 60 });
+    const room = me.premium || me.groups.length === 0;
+    if (room) {
+        const name = h('input', { name: 'name', required: true, maxLength: 60, placeholder: t('groupNamePh') });
         const seatMode = select('seatMode', ['member', 'election', 'manual'].map(m => [m, t('seatMode_' + m)]), 'member');
-        const discipline = select('discipline', ['free', 'bloc', 'choose'].map(m => [m, t('discipline_' + m)]), 'choose');
+        const discipline = select('discipline', ['free', 'bloc', 'choose'].map(m => [m, t('discipline_' + m)]), 'free');
         const totalSeats = h('input', { type: 'number', name: 'totalSeats', min: 1, max: 1000, value: 11 });
         const seatsField = field(t('totalSeats'), totalSeats);
-        seatsField.hidden = true;
-        seatMode.onchange = () => { seatsField.hidden = seatMode.value !== 'election'; };
+        const parties = h('input', { type: 'checkbox' });
         const bipartisan = h('input', { type: 'checkbox' });
+        const sync = () => {
+            seatsField.hidden = seatMode.value !== 'election';
+            // Con elecciones los partidos hacen falta
+            if (seatMode.value === 'election') parties.checked = true;
+            bipartisan.closest('label').hidden = !parties.checked;
+        };
+        seatMode.onchange = sync; parties.onchange = sync;
         let chatHours = 24;
         const btn = h('button.btn', { type: 'submit' }, t('create'));
-        const help = h('button.btn.btn-sec', {
-            type: 'button',
-            onclick: () => openWizard(s => {
-                seatMode.value = s.seatMode; discipline.value = s.discipline; totalSeats.value = s.totalSeats;
-                bipartisan.checked = s.bipartisan; chatHours = s.chatHours;
-                seatMode.onchange();
-                name.focus();
-            }),
-        }, t('helpMeChoose'));
+        const more = h('details.more',
+            h('summary', t('moreOptions')),
+            h('div.form', { style: { marginTop: '12px' } },
+                h('div.row', h('button.btn.btn-sec.btn-sm', {
+                    type: 'button',
+                    onclick: () => openWizard(s => {
+                        seatMode.value = s.seatMode; discipline.value = s.discipline; totalSeats.value = s.totalSeats;
+                        parties.checked = s.parties; bipartisan.checked = s.bipartisan; chatHours = s.chatHours;
+                        sync(); more.open = true; name.focus();
+                    }),
+                }, t('helpMeChoose')), h('span.sub', { style: { margin: 0 } }, t('helpMeChooseSub'))),
+                h('label.check', parties, t('partiesOn')),
+                h('label.check', bipartisan, t('bipartisan')),
+                h('div.fields', field(t('seatModeLabel'), seatMode), field(t('disciplineLabel'), discipline), seatsField)));
+        sync();
         createBlock = section(t('createGroup'), null, h('form.form', {
             onsubmit: e => {
                 e.preventDefault();
                 busy(btn, async () => {
                     const gid = await createGroup(me, {
                         name: name.value.trim(), seatMode: seatMode.value, discipline: discipline.value,
-                        totalSeats: Number(totalSeats.value) || 11, bipartisan: bipartisan.checked, chatHours,
+                        totalSeats: Number(totalSeats.value) || 11, parties: parties.checked,
+                        bipartisan: parties.checked && bipartisan.checked, chatHours,
                     });
                     location.hash = `#/g/${gid}`;
                 });
             },
-        }, field(t('groupName'), name), h('div.row', help, h('span.sub', { style: { margin: 0 } }, t('helpMeChooseSub'))),
-        h('div.fields', field(t('seatModeLabel'), seatMode), field(t('disciplineLabel'), discipline), seatsField),
-        h('label.check', bipartisan, t('bipartisan')), h('div.row', btn)));
+        }, h('div.inline-form', name, btn), more));
     } else {
-        createBlock = section(t('createGroup'), badge(t('premium'), 'accent'), h('p.note.blue', t('premiumOnly')));
+        createBlock = section(t('createGroup'), null, h('p.note.blue', t('freeLimit')));
     }
-
     mount(main,
         h('div.page-head', h('div', h('div.eyebrow', new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })), h('h1', me.name))),
         h('div.grid.grid-side',

@@ -70,6 +70,56 @@ export function renderVotes(body, ctx) {
     );
 }
 
+// ---------- Votación rápida ----------
+// Lo mínimo para votar algo en segundos: pregunta, sí/no u opciones, y cuánto dura.
+const quickState = {};
+export function quickVote(ctx) {
+    const { d, gid, me, app } = ctx;
+    const st = quickState[gid] ||= { kind: 'yesno', when: 'live' };
+    const q = h('input', { required: true, maxLength: 140, placeholder: t('quickPh') });
+    const opts = h('input', { maxLength: 300, placeholder: t('quickOptsPh') });
+    const optsRow = h('div', opts);
+    optsRow.hidden = st.kind !== 'options';
+    const seg = (key, values) => h('div.seg.seg-lg', values.map(([v, label]) => h(`button${st[key] === v ? '.on' : ''}`, {
+        type: 'button',
+        onclick: e => {
+            st[key] = v;
+            e.target.parentElement.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === e.target));
+            optsRow.hidden = st.kind !== 'options';
+            if (st.kind === 'options') opts.focus();
+        },
+    }, label)));
+    const btn = h('button.btn', { type: 'submit' }, t('quickGo'));
+    const form = h('form.quick', {
+        onsubmit: e => {
+            e.preventDefault();
+            busy(btn, async () => {
+                const v = {
+                    type: st.kind, title: q.value.trim(), majority: 'simple', method: 'plurality', secret: false,
+                    discipline: d.group.discipline === 'bloc' ? 'bloc' : 'free',
+                    mode: st.when === 'live' ? 'live' : 'async',
+                    deadline: st.when === 'live' ? null : new Date(Date.now() + (st.when === '3d' ? 72 : 24) * 3600 * 1000),
+                };
+                if (st.kind === 'options') {
+                    const labels = opts.value.split(/[,;\n]/).map(s => s.trim()).filter(Boolean);
+                    if (labels.length < 2) { opts.focus(); throw fail(t('quickOptsNeed')); }
+                    v.options = labels.slice(0, 12).map((label, i) => ({ id: 'o' + i, label }));
+                }
+                const vid = await createVote(gid, me.id, v);
+                app.clean();
+                location.hash = `#/g/${gid}/v/${vid}`;
+            });
+        },
+    },
+    h('div.inline-form', q, btn),
+    optsRow,
+    h('div.quick-opts',
+        seg('kind', [['yesno', t('quickYesNo')], ['options', t('quickOptions')]]),
+        seg('when', [['live', t('quickLive')], ['24h', '24 h'], ['3d', t('quick3d')]]),
+        h('a.link', { href: `#/g/${gid}/new` }, t('quickMore'))));
+    return h('section.quick-box', h('div.eyebrow', t('quickTitle')), form);
+}
+
 // ---------- Nueva votación ----------
 export function renderNewVote(body, ctx) {
     const { d, gid, me, app } = ctx;

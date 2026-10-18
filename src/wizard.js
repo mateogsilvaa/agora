@@ -49,6 +49,7 @@ export function suggest(a) {
         seatMode: politics && a.parties !== 'none' ? 'election' : 'member',
         totalSeats: { small: 11, mid: 25, big: 51 }[a.size] || 11,
         discipline: a.parties === 'none' ? 'free' : a.discipline || 'choose',
+        parties: a.parties !== 'none',
         bipartisan: a.sides === 'two' && a.parties !== 'none',
         chatHours: { friends: 24, class: 12, org: 72, sim: 48 }[a.purpose] || 24,
     };

@@ -144,6 +144,15 @@ form.form { display: grid; gap: 14px; }
 .pass-eye svg { width: 20px; height: 20px; }
 .page-head .eyebrow { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 select, select option { text-transform: none !important; letter-spacing: 0 !important; }
+/* Votación rápida */
+.quick-box { border: 1px solid var(--ink); background: var(--panel); padding: 14px; margin-bottom: 26px; display: grid; gap: 10px; }
+.quick { display: grid; gap: 10px; }
+.quick-opts { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.quick-opts .link { margin-left: auto; }
+.seg-lg button { padding: 7px 11px; font-size: 11px; }
+details.more > summary { cursor: pointer; font: 700 10px var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--muted); list-style: none; }
+details.more > summary::before { content: '+ '; color: var(--accent); }
+details.more[open] > summary::before { content: '– '; }
 /* Un campo y su botón en la misma línea */
 .inline-form { display: flex; gap: 8px; align-items: stretch; }
 .inline-form input { flex: 1; min-width: 0; }

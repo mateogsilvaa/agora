@@ -5,7 +5,8 @@ export function h(tag, attrs, ...children) {
     const [name, ...classes] = tag.split('.');
     const el = document.createElement(name || 'div');
     if (classes.length) el.className = classes.join(' ');
-    if (attrs && (typeof attrs !== 'object' || attrs instanceof Node || Array.isArray(attrs))) {
+    // Si el segundo argumento no son atributos (texto, número —también 0—, nodo o lista), es un hijo
+    if (attrs != null && (typeof attrs !== 'object' || attrs instanceof Node || Array.isArray(attrs))) {
         children.unshift(attrs);
         attrs = null;
     }
