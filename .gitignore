@@ -4,3 +4,8 @@ dist
 .env.*.local
 .firebase
 *.log
+
+# Archivos locales del consejo (no van al repo)
+.claude/agents/
+.claude/commands/
+council/
