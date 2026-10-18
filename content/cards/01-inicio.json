@@ -1,0 +1,218 @@
+[
+  {
+    "id": "f_asamblea_tasas",
+    "stage": [1, 1], "weight": 4, "cooldown": 999,
+    "tags": ["universidad", "calle"],
+    "from": "asamblea", "channel": "calle", "scene": "facultad",
+    "text": "La asamblea vota encerrarse en el rectorado contra la subida de tasas. Te piden que leas el comunicado ante las cámaras de la televisión autonómica. Tu nombre saldrá en el rótulo.",
+    "options": [
+      { "label": "Leerlo", "effects": { "opinion": 6, "prensa": 6, "influencia": -3 }, "conviccion": 4,
+        "setFlags": ["cara_encierro"], "outcome": "Treinta segundos en el informativo de las nueve. Tu madre lo grabó." },
+      { "label": "Que lo lea otro; tú redactas", "effects": { "influencia": 4, "prensa": -2 }, "conviccion": 0,
+        "outcome": "El comunicado era tuyo. Las imágenes, de otro." },
+      { "label": "No ir: tienes una entrevista para unas prácticas", "effects": { "influencia": 2, "opinion": -4 }, "conviccion": -5,
+        "outcome": "No te cogieron. Al encierro fueron cuatrocientas personas." }
+    ]
+  },
+  {
+    "id": "f_profesora_tfg",
+    "stage": [1, 1], "weight": 3, "cooldown": 999,
+    "tags": ["universidad"],
+    "from": "profesora", "channel": "despacho", "scene": "facultad",
+    "text": "Tu directora de TFG lee el borrador sobre vivienda y te devuelve el capítulo de conclusiones tachado. «Es riguroso, pero si quieres que te publiquen, rebaja lo de la responsabilidad de los fondos. Los evaluadores también tienen proyectos financiados».",
+    "options": [
+      { "label": "Rebajarlo", "effects": { "influencia": 5, "prensa": 2 }, "conviccion": -6,
+        "setFlags": ["tfg_rebajado"], "outcome": "Matrícula de honor. La conclusión ahora dice «se requieren más estudios»." },
+      { "label": "Mantenerlo", "effects": { "influencia": -4, "opinion": 3 }, "conviccion": 5,
+        "setFlags": ["tfg_integro"], "outcome": "Un notable. Nadie lo publica. Alguien lo sube a un foro y lo leen dos mil personas." }
+    ]
+  },
+  {
+    "id": "f_juventudes_cafe",
+    "stage": [1, 1], "weight": 3, "cooldown": 999,
+    "tags": ["partido"],
+    "from": "juventudes", "channel": "mensaje", "scene": "bar",
+    "text": "«Te vimos en la asamblea. Hablas bien. El partido va a necesitar caras nuevas ahora que el bipartidismo se ha roto. ¿Un café? Sin compromiso. Bueno, con un poco».",
+    "options": [
+      { "label": "Ir al café", "effects": { "influencia": 6, "opinion": -2 }, "conviccion": -2,
+        "relations": { "juventudes": 1 }, "setFlags": ["cafe_juventudes"], "outcome": "Te pagan el café. Te apuntan el móvil en una libreta." },
+      { "label": "«No me fío de los partidos»", "effects": { "opinion": 3, "influencia": -3 }, "conviccion": 3,
+        "outcome": "«Ya cambiarás», te contestan. Lo dicen sin malicia." }
+    ]
+  },
+  {
+    "id": "f_beca_fundacion",
+    "stage": [1, 1], "weight": 3, "cooldown": 999,
+    "tags": ["dinero", "tecnica"],
+    "from": "fundacion", "channel": "correo", "scene": "oficina",
+    "text": "La fundación de estudios del partido ofrece una beca de investigación de 900 euros al mes. El tema lo eligen ellos: «Flexibilidad y empleabilidad en el mercado laboral juvenil».",
+    "options": [
+      { "label": "Aceptarla", "effects": { "influencia": 6, "prensa": 2 }, "conviccion": -6,
+        "setFlags": ["beca_fundacion"], "outcome": "Tu primer sueldo serio es para escribir que los sueldos no son el problema." },
+      { "label": "Seguir con el contrato de prácticas", "effects": { "influencia": -2, "opinion": 2 }, "conviccion": 3,
+        "outcome": "Setecientos euros. Pero el informe no lleva tu firma." }
+    ]
+  },
+  {
+    "id": "f_plataforma_desahucio",
+    "stage": [1, 2], "weight": 3, "cooldown": 999,
+    "tags": ["vivienda", "calle"],
+    "from": "plataforma", "channel": "llamada", "scene": "portal",
+    "text": "La plataforma de afectados necesita gente a las siete de la mañana en un portal: una mujer de 71 años, deuda con un fondo que compró la hipoteca al banco rescatado. La policía llegará a las ocho.",
+    "options": [
+      { "label": "Ir al portal", "effects": { "opinion": 7, "influencia": -3, "judicial": 3 }, "conviccion": 6,
+        "setFlags": ["portal_paralizado"], "relations": { "plataforma": 2 }, "outcome": "Se aplaza un mes. Te identifican. Tu nombre queda en un atestado." },
+      { "label": "Mandar un tuit de apoyo", "effects": { "prensa": 2 }, "conviccion": -2,
+        "outcome": "Doscientos «me gusta». La mujer fue desalojada a las ocho y diez." }
+    ]
+  },
+  {
+    "id": "f_primer_empleo",
+    "stage": [1, 1], "weight": 2, "cooldown": 999,
+    "tags": ["dinero"],
+    "from": "familia", "channel": "llamada", "scene": "casa",
+    "text": "Tu madre ha hablado con el cuñado de una vecina que trabaja en la diputación provincial. Hay una plaza de interino «que se va a convocar de una forma que te va bien». Solo hay que echar la solicitud el día que te digan.",
+    "options": [
+      { "label": "Echar la solicitud", "effects": { "influencia": 6, "judicial": 3 }, "conviccion": -7,
+        "setFlags": ["plaza_enchufe"], "outcome": "Te dan la plaza. Se presentaron 312 personas." },
+      { "label": "«Mamá, no»", "effects": { "opinion": 2, "influencia": -2 }, "conviccion": 4,
+        "outcome": "Tu madre no lo entiende. Lo hacía por ti." }
+    ]
+  },
+  {
+    "id": "f_tres_puertas",
+    "kind": "promotion",
+    "stage": [1, 1], "weight": 5, "cooldown": 999,
+    "tags": ["hito"],
+    "requires": { "minStageTurns": 8 },
+    "from": "profesora", "channel": "despacho", "scene": "facultad",
+    "title": "Fin de la facultad",
+    "text": "Te has graduado. Tres puertas abiertas a la vez, y sabes que solo cabe una: las Juventudes te ofrecen ir en las listas municipales; la fundación, un puesto de analista; la plataforma quiere que coordines su asamblea de distrito.",
+    "options": [
+      { "label": "Juventudes: entrar en el partido", "effects": { "influencia": 8, "opinion": -3 }, "conviccion": -3,
+        "setVia": "aparato", "promote": true, "outcome": "Te dan el carné en una sede que huele a moqueta. Ya eres de algo." },
+      { "label": "Fundación: analista", "effects": { "influencia": 4, "prensa": 3 }, "conviccion": -2,
+        "setVia": "tecnica", "promote": true, "outcome": "Te dan una mesa y una contraseña. Tus informes los firmará otro." },
+      { "label": "Plataforma: la calle", "effects": { "opinion": 8, "influencia": -4 }, "conviccion": 4,
+        "setVia": "movimiento", "promote": true, "outcome": "No hay sueldo. Hay una asamblea cada martes y cuatrocientos mensajes al día." }
+    ]
+  },
+
+  {
+    "id": "a_censo_militancia",
+    "stage": [2, 2], "weight": 3, "cooldown": 999,
+    "tags": ["partido", "primarias"],
+    "requires": { "via": ["aparato"] },
+    "from": "sec_organizacion", "channel": "despacho", "scene": "sede",
+    "text": "Vienen primarias. El Secretario de Organización te da una lista de 140 afiliados que no pagan cuota desde 2011. «Revisa el censo. Si alguno no está al corriente, que no vote. Y si está al corriente pero no es de los nuestros, revisa bien».",
+    "options": [
+      { "label": "Depurar el censo", "effects": { "influencia": 10, "opinion": -3, "judicial": 2 }, "conviccion": -8,
+        "setFlags": ["censo_depurado"], "relations": { "sec_organizacion": 2 }, "addDebt": { "id": "censo", "in": [30, 50], "severity": 2 },
+        "outcome": "Quedan 41 votantes. Ganan los vuestros por 23 a 18." },
+      { "label": "Revisar solo las cuotas, a todos por igual", "effects": { "influencia": -6, "opinion": 3 }, "conviccion": 4,
+        "relations": { "sec_organizacion": -2 }, "outcome": "Gana el otro sector por tres votos. Alguien apunta tu nombre." }
+    ]
+  },
+  {
+    "id": "a_pegada_carteles",
+    "stage": [2, 2], "weight": 2, "cooldown": 30,
+    "tags": ["partido", "campana"],
+    "requires": { "via": ["aparato"] },
+    "from": "sec_agrupacion", "channel": "mensaje", "scene": "calle",
+    "text": "Pegada de carteles a las once de la noche. El cartel lleva la cara del candidato a la alcaldía, que no ha venido nunca a la agrupación. Tampoco esta noche.",
+    "options": [
+      { "label": "Ir y pegar los carteles", "effects": { "influencia": 5 }, "conviccion": -2,
+        "relations": { "sec_agrupacion": 1 }, "outcome": "Dos horas, un bote de cola y una foto en el grupo con tres pulgares." },
+      { "label": "Proponer que el candidato venga a una asamblea primero", "effects": { "influencia": -4, "opinion": 2 }, "conviccion": 3,
+        "relations": { "sec_agrupacion": -1 }, "outcome": "Te contestan con un audio de cuatro minutos sobre la disciplina." }
+    ]
+  },
+  {
+    "id": "a_informe_mercado",
+    "stage": [2, 3], "weight": 3, "cooldown": 999,
+    "tags": ["tecnica", "trabajo"],
+    "requires": { "via": ["tecnica"] },
+    "from": "fundacion", "channel": "correo", "scene": "oficina",
+    "text": "Tu informe concluye que la reforma laboral de 2012 precarizó a los menores de 30. El director de la fundación te pide «un resumen ejecutivo más equilibrado» porque el partido va a negociar con la patronal la semana que viene.",
+    "options": [
+      { "label": "Equilibrarlo", "effects": { "influencia": 8, "prensa": 2 }, "conviccion": -8,
+        "setFlags": ["informe_equilibrado"], "outcome": "En el resumen ejecutivo la palabra «precariedad» se convierte en «flexibilidad de entrada»." },
+      { "label": "Dejar las conclusiones como están", "effects": { "influencia": -6, "opinion": 2 }, "conviccion": 5,
+        "outcome": "El informe sale con tus conclusiones. No lo presenta nadie. Se queda en la web, en la sección de publicaciones." },
+      { "label": "Equilibrarlo y filtrar la versión original", "effects": { "influencia": 3, "prensa": 6, "judicial": 2 }, "conviccion": -2,
+        "setFlags": ["filtrador"], "outcome": "Un diario publica «el informe que el partido no quiere que leas». Nadie sabe quién lo filtró. Todavía." }
+    ]
+  },
+  {
+    "id": "a_asamblea_dividida",
+    "stage": [2, 3], "weight": 3, "cooldown": 999,
+    "tags": ["calle", "movimiento"],
+    "requires": { "via": ["movimiento"] },
+    "from": "plataforma", "channel": "calle", "scene": "asamblea",
+    "text": "Un partido emergente propone a la plataforma integrarse en su candidatura municipal. Te ofrecen el número cuatro. La mitad de la asamblea dice que es la única forma de cambiar algo; la otra mitad, que es el final del movimiento.",
+    "options": [
+      { "label": "Defender la candidatura", "effects": { "influencia": 8, "opinion": -2, "prensa": 4 }, "conviccion": -4,
+        "setFlags": ["candidatura_unidad"], "relations": { "plataforma": -1 }, "outcome": "Gana por seis votos. Doce personas no vuelven a la asamblea." },
+      { "label": "Defender la independencia del movimiento", "effects": { "opinion": 5, "influencia": -5 }, "conviccion": 5,
+        "relations": { "plataforma": 2 }, "outcome": "Gana la independencia. El partido emergente encuentra a otra persona para el número cuatro." }
+    ]
+  },
+  {
+    "id": "a_concejal_veterano",
+    "stage": [2, 3], "weight": 2, "cooldown": 999,
+    "tags": ["partido"],
+    "from": "concejal_veterano", "channel": "despacho", "scene": "bar",
+    "text": "Un concejal con 24 años en el cargo te invita a un vino. «Tú vienes con ideas. Muy bien. Aquí las ideas duran lo que tarda en llegar el primer presupuesto. Lo que dura es saber a quién llamar». Te pasa una tarjeta sin nombre, solo un teléfono.",
+    "options": [
+      { "label": "Guardar la tarjeta", "effects": { "influencia": 5 }, "conviccion": -3,
+        "setFlags": ["tarjeta_veterano"], "relations": { "concejal_veterano": 2 }, "outcome": "La guardas en la cartera, detrás del DNI." },
+      { "label": "Devolvérsela", "effects": { "influencia": -3, "opinion": 1 }, "conviccion": 3,
+        "relations": { "concejal_veterano": -1 }, "outcome": "Se ríe. «Ya me la pedirás»." }
+    ]
+  },
+  {
+    "id": "a_lista_cremallera",
+    "stage": [2, 2], "weight": 2, "cooldown": 999,
+    "tags": ["partido", "listas"],
+    "from": "sec_organizacion", "channel": "despacho", "scene": "sede",
+    "text": "Para cuadrar la lista hay que mover a una compañera del puesto 5 al 9. «Es una cuestión de equilibrios territoriales». El equilibrio territorial es el sobrino del presidente provincial, que entra en el 5.",
+    "options": [
+      { "label": "Firmar la propuesta de lista", "effects": { "influencia": 7, "opinion": -2 }, "conviccion": -6,
+        "relations": { "sec_organizacion": 1 }, "outcome": "La compañera se entera por el grupo de WhatsApp. No te saluda en la siguiente asamblea." },
+      { "label": "Votar en contra en el comité", "effects": { "influencia": -7, "opinion": 3 }, "conviccion": 5,
+        "relations": { "sec_organizacion": -2 }, "outcome": "Sale aprobada 14 a 1. El acta recoge tu voto. El acta lo recoge todo." }
+    ]
+  },
+  {
+    "id": "a_promocion_concejal",
+    "kind": "promotion",
+    "stage": [2, 2], "weight": 5, "cooldown": 999,
+    "tags": ["hito"],
+    "requires": { "minStageTurns": 14, "stats": { "influencia": [40, 100] } },
+    "from": "sec_agrupacion", "channel": "despacho", "scene": "ayuntamiento",
+    "title": "Elecciones municipales",
+    "text": "Entras de concejal en la oposición, en una ciudad de 180.000 habitantes. El grupo tiene siete concejales y un despacho para todos. Te dan la portavocía de Urbanismo, que nadie quería.",
+    "options": [
+      { "label": "Aceptar Urbanismo", "effects": { "influencia": 6, "prensa": 4 }, "promote": true,
+        "outcome": "Te dan un pase, una cuenta de correo institucional y 312 expedientes pendientes." },
+      { "label": "Pedir Servicios Sociales", "effects": { "opinion": 5, "influencia": -2 }, "conviccion": 2, "promote": true,
+        "setFlags": ["concejal_sociales"], "outcome": "Te lo dan. Tiene la mitad de presupuesto y el doble de llamadas." }
+    ]
+  },
+  {
+    "id": "a_promocion_movimiento",
+    "kind": "promotion",
+    "stage": [2, 2], "weight": 6, "cooldown": 999,
+    "tags": ["hito"],
+    "requires": { "minStageTurns": 14, "via": ["movimiento"], "stats": { "opinion": [45, 100] } },
+    "from": "plataforma", "channel": "calle", "scene": "ayuntamiento",
+    "title": "Elecciones municipales",
+    "text": "La candidatura ciudadana entra en el ayuntamiento con cuatro concejales y llave de gobierno. Eres uno de ellos. Mañana empiezan las negociaciones y ya te han llamado tres partidos.",
+    "options": [
+      { "label": "Entrar al gobierno a cambio de Vivienda", "effects": { "influencia": 8, "opinion": -2 }, "conviccion": -2, "promote": true,
+        "setFlags": ["cogobierno"], "outcome": "Concejalía de Vivienda. Presupuesto: el 1,4 % del total." },
+      { "label": "Quedarse fuera y fiscalizar", "effects": { "opinion": 4, "prensa": 4, "influencia": -3 }, "conviccion": 3, "promote": true,
+        "outcome": "Oposición. Tienes una moción por pleno y ninguna forma de que se cumpla." }
+    ]
+  }
+]

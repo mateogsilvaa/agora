@@ -1,71 +1,73 @@
 @import "tailwindcss";
 
 @theme {
-  --color-papel: #F2EAD8;
-  --color-papel-2: #E6DBC3;
-  --color-tinta: #1C1A17;
-  --color-tinta-suave: #5B544A;
-  --color-tampon: #B3261E;
-  --color-boe: #24476B;
-  --color-urna: #2F6B4F;
-  --color-portada: #C08A2E;
-  --color-sumario: #8C8577;
-  --color-chat: #DCF8C6;
-  --font-titular: "Playfair Display", Georgia, serif;
-  --font-texto: "Source Serif 4", Georgia, serif;
-  --font-ui: Inter, system-ui, sans-serif;
-  --font-cifra: "IBM Plex Mono", ui-monospace, monospace;
-}
+  --color-noche: #0b0d10;
+  --color-carbon: #13161b;
+  --color-carta: #1f2329;
+  --color-borde: #2e333b;
+  --color-tinta: #d9d4c7;
+  --color-apagado: #8b8f97;
+  --color-tenue: #5a5f68;
+  --color-ambar: #c9a24b;
+  --color-sangre: #b8473d;
 
-/* Noche de escrutinio */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-papel: #16140F;
-    --color-papel-2: #24211A;
-    --color-tinta: #ECE3CF;
-    --color-tinta-suave: #A89F8E;
-    --color-sumario: #5E584D;
-    --color-chat: #1F3B2C;
-  }
-}
-:root[data-theme="dark"] {
-  --color-papel: #16140F;
-  --color-papel-2: #24211A;
-  --color-tinta: #ECE3CF;
-  --color-tinta-suave: #A89F8E;
-  --color-sumario: #5E584D;
-  --color-chat: #1F3B2C;
+  --color-inf: #7b8fb0;
+  --color-opi: #8fa58a;
+  --color-pre: #b9a27a;
+  --color-jud: #b5655c;
+
+  --font-pixel: "Silkscreen", "VT323", monospace;
+  --font-crt: "VT323", ui-monospace, monospace;
+  --font-serif: "Newsreader", "Source Serif 4", Georgia, serif;
 }
 
 html, body { height: 100%; }
 body {
   margin: 0;
-  background: var(--color-papel);
+  background: var(--color-noche);
   color: var(--color-tinta);
-  font-family: var(--font-texto);
+  font-family: var(--font-serif);
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: none;
 }
 #app { min-height: 100dvh; }
 
-.papel {
-  background-color: var(--color-papel-2);
-  background-image: radial-gradient(rgba(0,0,0,.035) 1px, transparent 1px);
-  background-size: 3px 3px;
+/* Líneas de monitor viejo por encima de todo, muy suaves */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(255,255,255,.018) 0 1px, transparent 1px 3px);
+  z-index: 50;
 }
-.regla { border-top: 3px double var(--color-tinta); }
-.tampon {
-  font-family: var(--font-titular);
-  color: var(--color-tampon);
-  border: 3px solid var(--color-tampon);
-  letter-spacing: .15em;
-  transform: rotate(-6deg);
-  display: inline-block;
-  padding: 0 .4em;
-  opacity: .85;
-}
-@keyframes latido { 50% { opacity: .35; } }
-.peligro { animation: latido 1s infinite; }
-@media (prefers-reduced-motion: reduce) { .peligro { animation: none; } }
 
-.streamer { font-size: 120%; }
+.pixelado { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+/* Botón de bisel de píxel */
+.bisel {
+  box-shadow: inset -3px -3px 0 rgba(0,0,0,.45), inset 3px 3px 0 rgba(255,255,255,.06);
+}
+.bisel:active { box-shadow: inset 3px 3px 0 rgba(0,0,0,.45); }
+
+/* La barra brilla cuando cambia */
+@keyframes brillo {
+  0% { filter: brightness(2.2) saturate(1.4); box-shadow: 0 0 10px currentColor; }
+  100% { filter: none; box-shadow: none; }
+}
+.brilla { animation: brillo .9s ease-out; }
+
+/* Parpadeo de previsualización: más rápido si el golpe es grande */
+@keyframes parpadeo { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+.parpadea-1 { animation: parpadeo .9s steps(2) infinite; }
+.parpadea-2 { animation: parpadeo .35s steps(2) infinite; }
+
+@keyframes latido-rojo { 0%, 100% { background-color: transparent; } 50% { background-color: rgba(184,71,61,.15); } }
+.zona-roja { animation: latido-rojo 1.4s steps(4) infinite; }
+
+@keyframes cursor { 50% { opacity: 0; } }
+.cursor::after { content: "▌"; margin-left: 2px; animation: cursor 1s steps(1) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .brilla, .parpadea-1, .parpadea-2, .zona-roja, .cursor::after { animation: none; }
+}

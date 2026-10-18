@@ -1,0 +1,44 @@
+{
+  "presidencia": {
+    "key": "presidencia",
+    "title": "Presidencia del Gobierno",
+    "win": true,
+    "text": "Juras el cargo un martes a las once. En el discurso dices «servicio» seis veces. El texto lo ha escrito alguien que no te conocía hace un año."
+  },
+  "repeticion": {
+    "key": "repeticion",
+    "title": "Repetición electoral",
+    "win": false,
+    "text": "Fuiste a la investidura sin pactar. Perdiste. En la repetición, el partido decide que el problema eras tú."
+  },
+  "consejo": {
+    "key": "consejo",
+    "title": "Consejo de administración",
+    "win": true,
+    "text": "Dos reuniones al mes, despacho con vistas, ninguna pregunta. El sector que regulabas te paga ahora por saber cómo se regula."
+  },
+  "consultora": {
+    "key": "consultora",
+    "title": "Socio de una consultora",
+    "win": true,
+    "text": "Vendes lo único que aprendiste en política: a quién llamar. Te va muy bien. Mejor que nunca."
+  },
+  "tertulia": {
+    "key": "tertulia",
+    "title": "Tertuliano a tiempo completo",
+    "win": true,
+    "text": "Opinas de todo cuatro mañanas a la semana. Has descubierto que es más fácil tener razón cuando no tienes que decidir."
+  },
+  "volver": {
+    "key": "volver",
+    "title": "La vuelta",
+    "win": true,
+    "text": "Vuelves a un trabajo normal, en un sitio normal. Los primeros meses miras el móvil cada diez minutos. Luego dejas de hacerlo."
+  },
+  "empresa_publica": {
+    "key": "empresa_publica",
+    "title": "Dirección general",
+    "win": false,
+    "text": "Diriges una empresa pública que gestiona algo que nadie sabe muy bien qué es. Cobras más que nunca. Nadie te llama."
+  }
+}

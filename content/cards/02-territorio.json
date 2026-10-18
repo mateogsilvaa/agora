@@ -1,0 +1,235 @@
+[
+  {
+    "id": "m_recalificacion",
+    "kind": "chain", "chain": "parcela", "step": 1,
+    "stage": [3, 3], "weight": 4, "cooldown": 999,
+    "tags": ["urbanismo", "dinero"],
+    "from": "urbanismo", "channel": "despacho", "scene": "ayuntamiento",
+    "text": "Una parcela de equipamiento escolar lleva once años sin colegio. La promotora que compró los terrenos colindantes propone recalificarla a residencial «para dinamizar el barrio» y ceder a cambio un 10 % para vivienda protegida. El colegio sigue en barracones.",
+    "options": [
+      { "label": "Apoyar la recalificación", "effects": { "influencia": 8, "opinion": -4, "judicial": 4 }, "conviccion": -7,
+        "setFlags": ["parcela_recalificada"], "relations": { "promotora": 2 }, "addDebt": { "id": "parcela", "in": [24, 40], "severity": 2 },
+        "outcome": "Se aprueba en pleno. Al día siguiente la promotora te manda una cesta de Navidad. Es junio." },
+      { "label": "Exigir el colegio primero", "effects": { "opinion": 6, "influencia": -5 }, "conviccion": 5,
+        "relations": { "promotora": -2 }, "outcome": "La parcela sigue vacía. Los barracones, también. Pero no se ha vendido." }
+    ]
+  },
+  {
+    "id": "m_parcela_vuelve",
+    "kind": "debt", "chain": "parcela", "step": 2,
+    "stage": [3, 7], "weight": 10, "cooldown": 3,
+    "tags": ["urbanismo", "justicia"],
+    "requires": { "flagsAll": ["parcela_recalificada"], "debtDue": "parcela" },
+    "from": "juzgado", "channel": "correo", "scene": "juzgado",
+    "text": "La parcela del colegio ha vuelto. Un juzgado investiga la recalificación tras la denuncia de la asociación de vecinos. El 10 % de vivienda protegida nunca se construyó: se «permutó» por un pago al ayuntamiento que acabó en la partida de fiestas.",
+    "options": [
+      { "label": "Declarar que seguiste el informe técnico", "effects": { "judicial": -6, "opinion": -4, "influencia": -2 }, "clearDebt": "parcela",
+        "outcome": "El técnico que firmó el informe se jubiló hace un año. Es fácil cargarle a él." },
+      { "label": "Señalar a la alcaldía", "effects": { "judicial": -10, "influencia": -10, "prensa": 6 }, "conviccion": 2, "clearDebt": "parcela",
+        "outcome": "Tu declaración abre una pieza separada. En el partido ya no te devuelven las llamadas." },
+      { "label": "Pedir un aplazamiento por motivos de agenda", "effects": { "judicial": 4 }, "delayDebt": { "id": "parcela", "turns": 12 },
+        "outcome": "Te lo conceden. La instrucción sigue sin ti." }
+    ]
+  },
+  {
+    "id": "m_ordenanza_civismo",
+    "stage": [3, 3], "weight": 3, "cooldown": 999,
+    "tags": ["pobreza", "calle"],
+    "from": "alcaldia", "channel": "despacho", "scene": "ayuntamiento",
+    "text": "Los comerciantes del centro se quejan. La alcaldía propone una «ordenanza de convivencia» que multa con 750 euros dormir en la vía pública. Nadie que duerma en la calle tiene 750 euros. Ese es, precisamente, el diseño.",
+    "options": [
+      { "label": "Votar a favor", "effects": { "influencia": 6, "opinion": 2 }, "conviccion": -9,
+        "setFlags": ["ordenanza_civismo"], "outcome": "Las multas no se cobran. Las personas se mueven tres calles más allá, fuera del centro." },
+      { "label": "Votar en contra y proponer un albergue", "effects": { "influencia": -5, "opinion": -2, "prensa": 3 }, "conviccion": 6,
+        "outcome": "El albergue no tiene ubicación porque ningún barrio lo quiere. El tuyo tampoco." }
+    ]
+  },
+  {
+    "id": "m_contrata_limpieza",
+    "stage": [3, 4], "weight": 3, "cooldown": 999,
+    "tags": ["trabajo", "dinero"],
+    "from": "interventor", "channel": "correo", "scene": "oficina",
+    "text": "El contrato de limpieza viaria se renueva. La empresa que lo tiene paga a sus trabajadores 300 euros menos que el convenio gracias a una subrogación «discutible». El pliego nuevo puede exigir el convenio. Encarece el servicio un 11 %.",
+    "options": [
+      { "label": "Exigir el convenio en el pliego", "effects": { "opinion": 4, "influencia": -4, "prensa": 2 }, "conviccion": 5,
+        "setFlags": ["pliego_social"], "outcome": "La empresa impugna el pliego. Ocho meses de prórroga con las condiciones antiguas." },
+      { "label": "Mantener el pliego «por estabilidad presupuestaria»", "effects": { "influencia": 6, "opinion": -3 }, "conviccion": -6,
+        "outcome": "Ahorro del 11 %. Lo presentas en rueda de prensa como gestión eficiente." }
+    ]
+  },
+  {
+    "id": "m_vivienda_publica_fondo",
+    "stage": [3, 4], "weight": 3, "cooldown": 999,
+    "tags": ["vivienda", "dinero"],
+    "from": "fondo", "channel": "despacho", "scene": "oficina",
+    "text": "Un fondo ofrece comprar las 1.800 viviendas públicas de la empresa municipal. «Gestión profesional, saneamiento de la deuda». Los inquilinos mantendrían sus contratos. Hasta que venzan.",
+    "options": [
+      { "label": "Apoyar la venta", "effects": { "influencia": 9, "opinion": -6, "judicial": 3 }, "conviccion": -10,
+        "setFlags": ["vivienda_vendida"], "setWorld": ["parque_publico_vendido"], "relations": { "fondo": 2 },
+        "outcome": "Deuda municipal reducida un 18 %. En tres años, el alquiler medio de esas viviendas sube un 40 %." },
+      { "label": "Bloquearla", "effects": { "influencia": -6, "opinion": 5 }, "conviccion": 6,
+        "setWorld": ["parque_publico_salvado"], "relations": { "fondo": -2 }, "outcome": "Las viviendas siguen siendo públicas. La deuda, también." }
+    ]
+  },
+  {
+    "id": "m_publicidad_institucional",
+    "stage": [3, 5], "weight": 3, "cooldown": 40,
+    "tags": ["prensa", "dinero"],
+    "from": "prensa_local", "channel": "llamada", "scene": "redaccion",
+    "text": "El director del diario provincial te llama. «Este año la campaña de publicidad institucional va a ir a quien se la merezca. Y la línea editorial también tiene que ver con quién se la merece. Tú sabrás».",
+    "options": [
+      { "label": "Asegurar la partida para el diario", "effects": { "prensa": 9, "judicial": 2 }, "conviccion": -5,
+        "relations": { "prensa_local": 2 }, "outcome": "Te entrevistan a doble página. Las preguntas te las mandan antes." },
+      { "label": "Repartir por audiencia, con criterios públicos", "effects": { "prensa": -6, "opinion": 3 }, "conviccion": 4,
+        "relations": { "prensa_local": -2 }, "outcome": "Criterios publicados en el BOP. El diario publica tres piezas sobre tu gestión. Ninguna buena." }
+    ]
+  },
+  {
+    "id": "m_vecinos_ruido",
+    "stage": [3, 3], "weight": 2, "cooldown": 40,
+    "tags": ["barrio"],
+    "from": "vecinos", "channel": "calle", "scene": "calle",
+    "text": "La asociación de vecinos de tu barrio te pide que el ayuntamiento limite los pisos turísticos. En tu edificio quedan tres familias. El resto son cajas de llaves con código.",
+    "options": [
+      { "label": "Llevar una moción al pleno", "effects": { "opinion": 6, "influencia": -3 }, "conviccion": 4,
+        "setFlags": ["mocion_turisticos"], "outcome": "Se aprueba con modificaciones. Las modificaciones la dejan en un estudio." },
+      { "label": "Pedirles paciencia: hay un plan del área de turismo", "effects": { "influencia": 3, "opinion": -4 }, "conviccion": -3,
+        "outcome": "El plan del área de turismo es un PDF con fotos de la catedral." }
+    ]
+  },
+  {
+    "id": "m_promocion_autonomico",
+    "kind": "promotion",
+    "stage": [3, 3], "weight": 5, "cooldown": 999,
+    "tags": ["hito"],
+    "requires": { "minStageTurns": 18, "stats": { "influencia": [40, 100] } },
+    "from": "sec_organizacion", "channel": "despacho", "scene": "parlamento",
+    "title": "Elecciones autonómicas",
+    "text": "La ejecutiva regional te incluye en la lista al parlamento autonómico, en puesto de salida. A cambio, dejas el ayuntamiento y tu puesto lo ocupa alguien de su confianza. No es una pregunta, pero te lo preguntan.",
+    "options": [
+      { "label": "Aceptar el puesto", "effects": { "influencia": 6, "prensa": 4 }, "conviccion": -2, "promote": true,
+        "outcome": "Diputado autonómico. Tu sucesor en el ayuntamiento deshace dos de tus tres mociones en el primer pleno." },
+      { "label": "Exigir que te sustituya alguien del barrio", "effects": { "influencia": -3, "opinion": 4 }, "conviccion": 3, "promote": true,
+        "requires": { "stats": { "influencia": [60, 100] } }, "outcome": "Lo consigues. Te lo van a cobrar, pero lo consigues." }
+    ]
+  },
+
+  {
+    "id": "r_reordenacion",
+    "kind": "chain", "chain": "urgencias", "step": 1,
+    "stage": [4, 4], "weight": 4, "cooldown": 999,
+    "tags": ["sanidad"],
+    "from": "consejeria_sanidad", "channel": "despacho", "scene": "oficina",
+    "title": "Plan de Reordenación Asistencial",
+    "text": "La consejería presenta un «Plan de Optimización de la Red Asistencial». En la página 47 se cierran por las noches las urgencias de nueve centros rurales «de baja frecuentación». La ambulancia más cercana estará a 54 minutos. El grupo necesita tu voto en comisión.",
+    "options": [
+      { "label": "Votar a favor del plan", "effects": { "influencia": 9, "opinion": -6 }, "conviccion": -9,
+        "setFlags": ["urgencias_cerradas"], "setWorld": ["urgencias_rurales_cerradas"], "addDebt": { "id": "urgencias", "in": [10, 20], "severity": 3 },
+        "outcome": "Aprobado. Nota de prensa: «La consejería refuerza la eficiencia del sistema público»." },
+      { "label": "Romper la disciplina de voto", "effects": { "influencia": -10, "opinion": 7, "prensa": 4 }, "conviccion": 7,
+        "relations": { "portavoz_grupo": -2 }, "outcome": "Multa de 600 euros del grupo. El plan sale igual, por un voto." },
+      { "label": "Proponer una enmienda: cerrar solo cuatro", "effects": { "influencia": 3, "opinion": -2 }, "conviccion": -3,
+        "setFlags": ["urgencias_cerradas"], "outcome": "Se cierran cuatro. Los cuatro pueblos con menos votantes del partido." }
+    ]
+  },
+  {
+    "id": "r_urgencias_vuelve",
+    "kind": "debt", "chain": "urgencias", "step": 2,
+    "stage": [4, 7], "weight": 10, "cooldown": 3,
+    "tags": ["sanidad", "peligro"],
+    "requires": { "flagsAll": ["urgencias_cerradas"], "debtDue": "urgencias" },
+    "from": "prensa_local", "channel": "llamada", "scene": "carretera",
+    "text": "Las urgencias que se cerraron han vuelto. Un hombre de 58 años muere de un infarto esperando la ambulancia en un pueblo de la sierra. El diario provincial ha encontrado el acta de la comisión. Tu voto sale en la segunda página.",
+    "options": [
+      { "label": "«Las decisiones se toman con criterios técnicos»", "effects": { "opinion": -9, "prensa": -4 }, "conviccion": -4, "clearDebt": "urgencias",
+        "outcome": "La frase la repiten todos los informativos. Con tu cara al lado." },
+      { "label": "Pedir públicamente la reapertura", "effects": { "opinion": 5, "influencia": -8 }, "conviccion": 4, "clearDebt": "urgencias",
+        "outcome": "La reapertura se anuncia «cuando las condiciones presupuestarias lo permitan»." },
+      { "label": "No hacer declaraciones", "effects": { "opinion": -4, "prensa": -6 }, "clearDebt": "urgencias",
+        "outcome": "Silencio. La noticia dura tres días. Para la familia, más." }
+    ]
+  },
+  {
+    "id": "r_regadio",
+    "stage": [4, 5], "weight": 3, "cooldown": 999,
+    "tags": ["campo", "agua"],
+    "from": "lobby_agrario", "channel": "llamada", "scene": "campo",
+    "text": "La organización agraria de la provincia te pide que el grupo vote contra el plan de cuenca, que reduce las concesiones de riego para salvar el humedal. «Son 4.000 empleos. Y 40.000 votos en la provincia clave. Tú haces las cuentas».",
+    "options": [
+      { "label": "Votar contra el plan", "effects": { "influencia": 7, "opinion": 2, "judicial": 2 }, "conviccion": -7,
+        "setWorld": ["humedal_sin_proteccion"], "relations": { "lobby_agrario": 2 }, "outcome": "El plan se aplaza. El humedal pierde un 12 % de superficie ese verano." },
+      { "label": "Defender el plan y una transición pagada", "effects": { "influencia": -6, "opinion": -3, "prensa": 3 }, "conviccion": 5,
+        "relations": { "lobby_agrario": -2 }, "outcome": "Tractores en la puerta del parlamento. Uno lleva tu foto." }
+    ]
+  },
+  {
+    "id": "r_concierto_privado",
+    "stage": [4, 5], "weight": 3, "cooldown": 999,
+    "tags": ["sanidad", "dinero"],
+    "from": "consejeria_sanidad", "channel": "correo", "scene": "oficina",
+    "text": "Para reducir listas de espera, la consejería deriva 30.000 operaciones a un grupo hospitalario privado. El coste por operación es un 22 % superior al público. El consejero delegado del grupo fue viceconsejero de sanidad hasta 2014.",
+    "options": [
+      { "label": "Defender la derivación en el pleno", "effects": { "influencia": 7, "opinion": 1, "judicial": 3 }, "conviccion": -7,
+        "relations": { "grupo_hospitalario": 2 }, "outcome": "Las listas bajan seis semanas. La plantilla del hospital público, en un 4 %." },
+      { "label": "Pedir que se contraten más turnos en el público", "effects": { "influencia": -5, "opinion": 4 }, "conviccion": 5,
+        "outcome": "Te contestan con un informe de Hacienda. Las listas siguen." }
+    ]
+  },
+  {
+    "id": "r_listas_espera",
+    "stage": [4, 6], "weight": 2, "cooldown": 999,
+    "tags": ["sanidad", "datos"],
+    "requires": { "via": ["tecnica"] },
+    "from": "jefe_gabinete", "channel": "correo", "scene": "oficina",
+    "text": "El jefe de gabinete te pide revisar la metodología de las listas de espera. Propuesta: no contar a los pacientes que han rechazado una cita en otro hospital a 90 km. «Técnicamente, han renunciado».",
+    "options": [
+      { "label": "Cambiar la metodología", "effects": { "influencia": 8, "prensa": 3, "judicial": 2 }, "conviccion": -8,
+        "setFlags": ["datos_maquillados"], "outcome": "La lista de espera baja un 31 % sin operar a nadie." },
+      { "label": "Documentar por qué no se debe", "effects": { "influencia": -5 }, "conviccion": 5,
+        "outcome": "Tu informe se archiva. La metodología cambia igual, firmada por otra persona." }
+    ]
+  },
+  {
+    "id": "r_brigadas",
+    "stage": [4, 4], "weight": 2, "cooldown": 999,
+    "tags": ["campo", "trabajo"],
+    "requires": { "origin": ["pueblo"] },
+    "from": "sindicato", "channel": "llamada", "scene": "campo",
+    "text": "Las brigadas forestales de tu comarca trabajan cuatro meses al año con contratos de campaña. El sindicato pide estabilizarlas antes del verano. En tu pueblo, el último incendio se apagó con los vecinos y un tractor.",
+    "options": [
+      { "label": "Presentar la enmienda aunque el grupo no la quiera", "effects": { "influencia": -5, "opinion": 6 }, "conviccion": 6,
+        "outcome": "Rechazada. En agosto arde la sierra de enfrente." },
+      { "label": "Esperar a la ley de presupuestos", "effects": { "influencia": 4 }, "conviccion": -5,
+        "outcome": "La ley de presupuestos mantiene los contratos de campaña." }
+    ]
+  },
+  {
+    "id": "r_tele_autonomica",
+    "stage": [4, 5], "weight": 2, "cooldown": 999,
+    "tags": ["prensa"],
+    "from": "jefe_gabinete", "channel": "despacho", "scene": "redaccion",
+    "text": "Hay que renovar el consejo de la televisión autonómica. El reparto está hecho: tres consejeros para tu partido, dos para el otro. Te piden un nombre «de confianza, pero con perfil profesional».",
+    "options": [
+      { "label": "Proponer a alguien de confianza", "effects": { "prensa": 8, "influencia": 3 }, "conviccion": -5,
+        "outcome": "Tu propuesta entra. Las tertulias de la mañana cambian de invitados en dos semanas." },
+      { "label": "Proponer un concurso público", "effects": { "prensa": -5, "opinion": 3, "influencia": -3 }, "conviccion": 4,
+        "outcome": "El concurso se convoca. Se resuelve con los mismos cinco nombres." }
+    ]
+  },
+  {
+    "id": "r_promocion_congreso",
+    "kind": "promotion",
+    "stage": [4, 4], "weight": 5, "cooldown": 999,
+    "tags": ["hito"],
+    "requires": { "minStageTurns": 20, "stats": { "influencia": [44, 100] } },
+    "from": "sec_organizacion", "channel": "despacho", "scene": "congreso",
+    "title": "Elecciones generales",
+    "text": "Repetición electoral. La dirección federal necesita a alguien de tu provincia en el Congreso. Tu nombre ha salido porque eres útil, joven y todavía no te conoce nadie fuera de aquí. Las tres cosas, en ese orden.",
+    "options": [
+      { "label": "Ir al Congreso", "effects": { "influencia": 6, "prensa": 6 }, "promote": true,
+        "outcome": "Escaño 214. Desde ahí no se ve la tribuna de prensa." },
+      { "label": "Ir, pero con un compromiso por escrito para tu provincia", "effects": { "influencia": 2, "opinion": 4 }, "conviccion": 2, "promote": true,
+        "setFlags": ["compromiso_provincia"], "outcome": "Te firman el compromiso. En papel sin membrete." }
+    ]
+  }
+]

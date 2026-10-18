@@ -3,45 +3,47 @@ import { weightedPick } from './rng';
 
 export const RED_ZONE: Record<Stat, [number, number]> = {
   influencia: [15, 85],
-  aprobacion: [15, 85],
-  medios: [15, 85],
-  alerta: [-1, 70], // la alerta solo mata por arriba
+  opinion: [15, 85],
+  prensa: [15, 85],
+  judicial: [-1, 70], // el riesgo judicial solo mata por arriba
 };
 
-export const SAFE_TURNS = 10; // nada letal al principio
+export const SAFE_TURNS = 6; // los primeros meses no hay nada letal
+
+const inRange = (v: number, [lo, hi]: [number, number]) => v >= lo && v <= hi;
 
 export function meets(req: Requires | undefined, s: GameState): boolean {
   if (!req) return true;
   if (req.flagsAll?.some(f => !s.flags.includes(f))) return false;
   if (req.flagsNone?.some(f => s.flags.includes(f))) return false;
-  if (req.dirt?.some(d => !s.dirt.includes(d))) return false;
-  if (req.party && !req.party.includes(s.party)) return false;
-  for (const [k, [lo, hi]] of Object.entries(req.stats ?? {})) {
-    const v = s.stats[k as Stat];
-    if (v < lo || v > hi) return false;
-  }
-  for (const [npc, [lo, hi]] of Object.entries(req.relations ?? {})) {
-    const v = s.relations[npc] ?? 0;
-    if (v < lo || v > hi) return false;
-  }
+  if (req.flagsAny && !req.flagsAny.some(f => s.flags.includes(f))) return false;
+  if (req.world?.some(f => !s.world.includes(f))) return false;
+  if (req.worldNone?.some(f => s.world.includes(f))) return false;
+  if (req.via && (!s.via || !req.via.includes(s.via))) return false;
+  if (req.origin && !req.origin.includes(s.origin)) return false;
+  if (req.conviccion && !inRange(s.conviccion, req.conviccion)) return false;
+  if (req.minStageTurns !== undefined && s.stageTurns < req.minStageTurns) return false;
+  for (const [k, r] of Object.entries(req.stats ?? {})) if (!inRange(s.stats[k as Stat], r!)) return false;
+  for (const [npc, r] of Object.entries(req.relations ?? {})) if (!inRange(s.relations[npc] ?? 0, r)) return false;
   if (req.debtDue && !s.debts.some(d => d.id === req.debtDue && d.dueTurn <= s.turn)) return false;
   return true;
 }
 
+export function visibleOptions(e: GameEvent, s: GameState): number[] {
+  return e.options.map((o, i) => (meets(o.requires, s) ? i : -1)).filter(i => i >= 0);
+}
+
 function available(e: GameEvent, s: GameState, ignoreCooldown = false): boolean {
-  if (s.act < e.act[0] || s.act > e.act[1]) return false;
+  if (s.stage < e.stage[0] || s.stage > e.stage[1]) return false;
   const seen = s.lastSeen[e.id];
-  const cd = e.cooldown ?? 25;
-  if (seen !== undefined && (cd >= 999 || (!ignoreCooldown && s.turn - seen < cd))) return false;
-  // las cadenas avanzan en orden: el paso n exige haber visto el n-1
+  const cd = e.cooldown ?? 40;
+  if (seen !== undefined && !ignoreCooldown && (cd >= 999 || s.turn - seen < cd)) return false;
+  if (seen !== undefined && ignoreCooldown && (cd >= 999 || s.turn - seen < 6)) return false;
+  // las cadenas avanzan en orden: el paso n exige haber vivido el n-1
   if (e.chain && e.step && e.step > 1 && !s.flags.includes(`chain:${e.chain}:${e.step - 1}`)) return false;
   if (s.turn <= SAFE_TURNS && e.tags.includes('peligro')) return false;
   if (!meets(e.requires, s)) return false;
   return visibleOptions(e, s).length >= 2;
-}
-
-export function visibleOptions(e: GameEvent, s: GameState): number[] {
-  return e.options.map((o, i) => (meets(o.requires, s) ? i : -1)).filter(i => i >= 0);
 }
 
 export function dangers(s: GameState): Danger[] {
@@ -54,14 +56,21 @@ export function dangers(s: GameState): Danger[] {
   return out;
 }
 
+const SPECIAL = new Set(['warning', 'debt', 'promotion']);
+
 /**
  * El director: prioridades fijas y luego sorteo con pesos.
- * deuda vencida > aviso > hito > cadena abierta > relleno
+ * deuda vencida > aviso > ascenso > cadena abierta > carta normal
  */
 export function nextEvent(pack: GameEvent[], s: GameState): [GameEvent, number] {
   let pool = pack.filter(e => available(e, s));
-  if (!pool.some(e => e.kind !== 'warning' && e.kind !== 'debt' && e.kind !== 'milestone')) {
+  if (!pool.some(e => !SPECIAL.has(e.kind ?? 'normal'))) {
     pool = pack.filter(e => available(e, s, true)); // mazo agotado: relajamos el cooldown
+  }
+  if (!pool.length) {
+    // último recurso: cualquier carta repetible de la etapa, aunque se haya visto hace poco
+    pool = pack.filter(e => (e.cooldown ?? 40) < 999 && !SPECIAL.has(e.kind ?? 'normal')
+      && s.stage >= e.stage[0] && s.stage <= e.stage[1] && meets(e.requires, s) && visibleOptions(e, s).length >= 2);
   }
 
   const debt = pool.filter(e => e.kind === 'debt');
@@ -73,29 +82,26 @@ export function nextEvent(pack: GameEvent[], s: GameState): [GameEvent, number] 
     if (warn.length) return pick(warn, s);
   }
 
-  const milestone = pool.filter(e => e.kind === 'milestone');
-  if (milestone.length) return pick(milestone, s);
+  // el ascenso no llega en cuanto se puede: compite con el día a día
+  const promo = pool.filter(e => e.kind === 'promotion');
+  const [r, rng] = weightedPick([true, false], [1, 2], s.rngState);
+  const next = { ...s, rngState: rng };
+  if (promo.length && r) return pick(promo, next);
 
   const chain = pool.filter(e => e.kind === 'chain' && (e.step ?? 1) > 1);
-  const rest = pool.filter(e => e.kind !== 'warning' && e.kind !== 'debt' && e.kind !== 'milestone');
-  // las cadenas abiertas tienen ventaja, pero no monopolio
-  return pick(chain.length ? [...chain, ...chain, ...rest] : rest, s);
+  const rest = pool.filter(e => !SPECIAL.has(e.kind ?? 'normal'));
+  if (!rest.length) return pick(promo.length ? promo : pool, next);
+  return pick(chain.length ? [...chain, ...chain, ...rest] : rest, next);
 }
 
 function pick(events: GameEvent[], s: GameState): [GameEvent, number] {
-  const comfort = comfortLevel(s);
   const weights = events.map(e => {
-    let w = e.weight * (e.ideology?.[s.party] ?? 1);
+    let w = e.weight;
     const repeats = e.tags.filter(t => s.recentTags.includes(t)).length;
-    w *= Math.pow(0.35, repeats);                      // nada de tres sobres seguidos
-    if (comfort > 0.7 && e.tags.includes('peligro')) w *= 2; // si vas sobrado, aprieta
+    w *= Math.pow(0.4, repeats);
+    if (e.requires?.via) w *= 1.6;      // lo propio de tu vía sale más
+    if (e.requires?.origin) w *= 1.4;   // y lo de tu origen también
     return Math.max(w, 0.01);
   });
   return weightedPick(events, weights, s.rngState);
-}
-
-/** 0 = al borde del abismo, 1 = demasiado cómodo. */
-function comfortLevel(s: GameState): number {
-  const d = (v: number) => Math.min(v, 100 - v) / 50;
-  return (d(s.stats.influencia) + d(s.stats.aprobacion) + d(s.stats.medios) + (1 - s.stats.alerta / 100)) / 4;
 }
