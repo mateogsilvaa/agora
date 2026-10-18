@@ -8,13 +8,14 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "simulate": "vite-node scripts/simulate.ts",
+    "og": "vite-node scripts/og.ts",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
     "firebase": "^11.10.0"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@sveltejs/vite-plugin-svelte": "^5.1.1",
     "@tailwindcss/vite": "^4.3.3",
     "svelte": "^5.57.2",

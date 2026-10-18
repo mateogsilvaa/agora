@@ -1,14 +1,59 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Partidas terminadas: cada jugador escribe las suyas una vez y no se tocan más.
-    match /runs/{runId} {
-      allow create: if request.auth != null
-        && request.resource.data.uid == request.auth.uid
-        && request.resource.data.turns is int
-        && request.resource.data.choices.size() <= 200;
-      allow read, update, delete: if false;
+
+    function isAdmin() {
+      return request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
+    function shortString(v, max) {
+      return v is string && v.size() <= max;
+    }
+
+    // Eventos de uso anónimos: cualquiera escribe uno, solo el admin lee.
+    match /events/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['type', 'slug', 'mode', 'top', 'pct', 'answers', 'ms', 'channel', 'ref', 'device', 'ts'])
+        && request.resource.data.type in ['start', 'finish', 'share', 'room_create', 'room_join']
+        && shortString(request.resource.data.slug, 80)
+        && request.resource.data.ts == request.time
+        && (!('answers' in request.resource.data) || shortString(request.resource.data.answers, 60))
+        && (!('ref' in request.resource.data) || shortString(request.resource.data.ref, 60));
+      allow read: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    // Salas en directo: sin cuenta. Se valida la forma de los datos.
+    match /rooms/{code} {
+      allow read: if true;
+      allow create: if code.matches('^[A-Z]{4}$')
+        && request.resource.data.keys().hasOnly(['test', 'phase', 'host', 'createdAt'])
+        && shortString(request.resource.data.test, 80)
+        && request.resource.data.phase == 'playing'
+        && shortString(request.resource.data.host, 20);
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['phase'])
+        && request.resource.data.phase in ['playing', 'guess', 'reveal'];
+      allow delete: if false;
+
+      match /players/{pid} {
+        allow read: if true;
+        allow create: if pid.size() <= 20
+          && request.resource.data.keys().hasOnly(['name', 'progress', 'done', 'answers', 'top', 'pct', 'guesses', 'joinedAt'])
+          && shortString(request.resource.data.name, 24)
+          && request.resource.data.name.size() > 0;
+        allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['progress', 'done', 'answers', 'top', 'pct', 'guesses'])
+          && request.resource.data.progress is int
+          && shortString(request.resource.data.answers, 60)
+          && shortString(request.resource.data.top, 40)
+          && request.resource.data.guesses.size() <= 30;
+        allow delete: if false;
+      }
+    }
+
+    // Lista de administradores: se edita solo desde la consola de Firebase.
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

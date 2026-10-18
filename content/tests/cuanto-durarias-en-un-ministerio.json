@@ -1,0 +1,50 @@
+{
+  "slug": "cuanto-durarias-en-un-ministerio",
+  "order": 5,
+  "category": "satira",
+  "title": "¿Cuánto durarías en un Ministerio antes de dimitir?",
+  "seoTitle": "¿Cuánto durarías en un Ministerio? El test de supervivencia política",
+  "description": "Filtraciones, puñaladas y crisis absurdas. 18 situaciones para saber cuánto aguantarías como ministro antes de dimitir (o de que te dimitan).",
+  "intro": [
+    "Ser ministro parece un sueño hasta que el primer lunes te llama tu jefe de gabinete para decirte que hay un audio. Este test te pone en las situaciones de verdad del poder: las que no salen en el BOE.",
+    "Responde rápido, sin pensarlo mucho, y te diremos cuánto durarías: desde unas horas hasta jubilarte en el cargo. Después reta a tus amigos: ¿quién del grupo sería el superviviente?"
+  ],
+  "faq": [
+    { "q": "¿Qué resultados hay?", "a": "Seis duraciones: 12 horas, Tres días, Un mes, Un año, Una legislatura entera y Eterno, que es cuando te jubilas en el cargo." },
+    { "q": "¿Durar mucho es bueno?", "a": "Depende de lo que hayas tenido que hacer para durar. El test no juzga. Tus amigos, sí." }
+  ],
+  "headline": "Según Votágora, duraría {name} en un Ministerio",
+  "color": "#3a1414",
+  "ink": "#f4e9df",
+  "agree": "Lo haría",
+  "disagree": "Jamás",
+  "minutes": 2,
+  "profiles": [
+    { "id": "h12", "name": "12 horas", "tagline": "y dimito por un tuit antes de jurar el cargo", "description": "Tienes principios, poca paciencia o las dos cosas. Dimites el primer día, y lo peor es que te sientes estupendamente.", "color": "#8e2a2a" },
+    { "id": "d3", "name": "tres días", "tagline": "y la filtración la hago yo mismo sin querer", "description": "Llegas con ganas, pero dices lo que piensas delante de un micrófono que estaba encendido. Una carrera breve y muy comentada.", "color": "#a8452b" },
+    { "id": "m1", "name": "un mes", "tagline": "y me pierdo en el pasillo del Ministerio", "description": "Aguantas lo justo para aprenderte el nombre de tu chófer. Al primer cambio de gobierno, sales tú en la foto.", "color": "#a86b2b" },
+    { "id": "a1", "name": "un año", "tagline": "y tengo un asesor que se encarga de las puñaladas", "description": "Sabes cuándo callar, cuándo filtrar y cuándo desaparecer de la tele. Te falta un poco de estómago para quedarte más.", "color": "#6b6b2b" },
+    { "id": "leg", "name": "una legislatura entera", "tagline": "y respondo a todas las preguntas sin decir nada", "description": "Superviviente profesional. Dominas el argumentario, tienes aliados en todos los bandos y ningún escándalo te dura más de una semana.", "color": "#2b5a6b" },
+    { "id": "eterno", "name": "toda la vida", "tagline": "y cuando me vaya, me nombrarán consejero de algo", "description": "Has sobrevivido a tres presidentes, dos mociones y un sumario. No es que no te puedan echar: es que nadie se acuerda de que estás.", "color": "#2b2b5a" }
+  ],
+  "questions": [
+    { "id": "s1", "text": "Si mi partido me pide defender algo que no comparto, lo defiendo igual.", "w": { "leg": 2, "eterno": 2, "a1": 1, "h12": -2, "d3": -1 } },
+    { "id": "s2", "text": "Antes de una rueda de prensa, pediría ver las preguntas.", "w": { "eterno": 2, "leg": 1, "d3": -2, "h12": -1 } },
+    { "id": "s3", "text": "Contestaría a un periodista: «Eso no me consta».", "w": { "eterno": 2, "leg": 2, "a1": 1, "h12": -2 } },
+    { "id": "s4", "text": "Filtraría algo a la prensa para hundir a un compañero.", "w": { "a1": 2, "leg": 1, "eterno": 1, "h12": -2, "m1": -1 } },
+    { "id": "s5", "text": "Dimitiría si mi ministerio comete un error grave, aunque no sea culpa mía.", "w": { "h12": 2, "d3": 1, "leg": -2, "eterno": -2 } },
+    { "id": "s6", "text": "Tengo tendencia a decir lo que pienso cerca de micrófonos.", "w": { "d3": 2, "h12": 1, "eterno": -2, "leg": -1 } },
+    { "id": "s7", "text": "Sé perfectamente quién me debe un favor.", "w": { "eterno": 2, "leg": 1, "a1": 1, "m1": -1 } },
+    { "id": "s8", "text": "Si estalla una crisis, me iría de vacaciones hasta que pase.", "w": { "eterno": 2, "a1": 1, "h12": -1, "d3": -1 } },
+    { "id": "s9", "text": "Me cuesta mucho aprenderme los nombres de la gente.", "w": { "m1": 2, "d3": 1, "eterno": -1, "leg": -1 } },
+    { "id": "s10", "text": "Firmaría un decreto sin leérmelo entero si mi equipo me dice que está bien.", "w": { "m1": 2, "leg": 1, "eterno": 1, "h12": -1 } },
+    { "id": "s11", "text": "Tengo un grupo de WhatsApp en el que hablo mal de mis jefes.", "w": { "d3": 2, "m1": 1, "eterno": -2 } },
+    { "id": "s12", "text": "Me haría una foto con un tractor aunque no sepa conducirlo.", "w": { "leg": 2, "a1": 1, "eterno": 1, "h12": -1 } },
+    { "id": "s13", "text": "Si me pillan en algo, lo niego todo hasta el final.", "w": { "eterno": 2, "leg": 1, "a1": 1, "h12": -2, "d3": -1 } },
+    { "id": "s14", "text": "Contestaría a los insultos en redes sociales personalmente.", "w": { "d3": 2, "h12": 1, "m1": 1, "eterno": -2, "leg": -1 } },
+    { "id": "s15", "text": "Puedo hablar 20 minutos sin decir absolutamente nada.", "w": { "eterno": 2, "leg": 2, "a1": 1, "h12": -1, "d3": -1 } },
+    { "id": "s16", "text": "Me iría a la empresa privada en cuanto me ofrezcan algo mejor.", "w": { "a1": 2, "m1": 1, "eterno": -2 } },
+    { "id": "s17", "text": "Apoyaría al presidente en público aunque en privado lo odie.", "w": { "leg": 2, "eterno": 2, "a1": 1, "h12": -2 } },
+    { "id": "s18", "text": "Si me mandan a un ministerio que no conozco, acepto igual.", "w": { "eterno": 2, "m1": 1, "leg": 1, "h12": -1 } }
+  ]
+}

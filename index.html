@@ -3,18 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#0b0d10" />
-    <meta name="description" content="Una carrera política entera, de la facultad a la presidencia, decisión a decisión." />
-    <title>Votágora</title>
+    <title>%TITLE%</title>
+    <meta name="description" content="%DESCRIPTION%" />
+    <link rel="canonical" href="%CANONICAL%" />
+    <meta name="robots" content="%ROBOTS%" />
+    <meta name="theme-color" content="%COLOR%" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Votágora" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content="%TITLE%" />
+    <meta property="og:description" content="%DESCRIPTION%" />
+    <meta property="og:url" content="%CANONICAL%" />
+    <meta property="og:image" content="%OG_IMAGE%" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="%TITLE%" />
+    <meta name="twitter:description" content="%DESCRIPTION%" />
+    <meta name="twitter:image" content="%OG_IMAGE%" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/icons/icon-180.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=VT323&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script type="application/ld+json">%JSONLD%</script>
+    <script>window.__PAGE__ = %PAGE%;</script>
   </head>
   <body>
     <div id="app"></div>
+    <article id="seo">%SEO_HTML%</article>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

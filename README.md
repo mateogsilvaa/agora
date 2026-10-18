@@ -1,22 +1,22 @@
-# Votágora: La Nueva Política
+# Votágora · El Oráculo
 
-Juego de cartas narrativo en una PWA: una carrera política entera, de la facultad (enero de 2016) a la presidencia.
-Cada decisión es la misma pregunta: traicionar lo que crees para avanzar, o mantenerlo y pagar el precio.
+Tests rápidos de deslizar (de acuerdo / en desacuerdo) pensados para compartir: tarjeta de resultado en imagen,
+retos entre amigos con comparación de respuestas y salas en directo donde todos hacen el mismo test y votan quién es quién.
 
-> Obra de ficción y sátira. Ningún personaje, partido ni empresa es real.
-
-- Diseño completo: [DISENO.md](DISENO.md)
-- Stack: Svelte 5 + Vite + Tailwind 4 + TypeScript. Firebase solo para registrar partidas acabadas.
-- Motor en TypeScript puro (`src/engine`): 7 etapas, 3 vías, 5 orígenes, convicción oculta, deudas que vuelven y legado entre carreras.
-- Pixel art generado en canvas (`src/ui/pixel`): escenarios por lugar y retratos por cargo.
-- Mazo en `content/cards/*.json`, un archivo por bloque de etapas. Va en el bundle: cero lecturas a Firestore mientras se juega.
+- Stack: Svelte 5 + Vite + Tailwind 4 + TypeScript. Firebase (Firestore) para salas, eventos de uso y panel de admin.
+- Tests en `content/tests/*.json`: perfiles, pesos por pregunta y texto para buscadores. Añadir un test = añadir un JSON.
+- SEO (`build/seo.ts`): una página HTML estática por test con título, descripción, canonical, Open Graph, datos
+  estructurados (Quiz, FAQPage, BreadcrumbList) y el texto del test visible. Genera `sitemap.xml` y `robots.txt`.
+- Imágenes para redes en `public/og/`, generadas con `npm run og` cuando cambia un test.
+- Panel de uso en `/admin/` (entrar con Google; el usuario tiene que estar en la colección `admins` de Firestore).
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
-npm test           # valida el mazo (cargos, escenarios, avisos, ascensos, lista negra de nombres reales) y juega 1000 carreras
-npm run simulate   # bots (azar, prudente, trepa, íntegro) que juegan 4000 carreras cada uno
+npm run dev     # http://localhost:5173
+npm test        # valida los tests (perfiles alcanzables, SEO, sin siglas reales) y la puntuación
+npm run og      # regenera las imágenes para redes
 ```
 
-Despliegue: GitHub Pages en cada push a `main` (`.github/workflows/deploy.yml`), dominio votagora.es.
-La versión anterior del repo (Ágora, la app de decisiones en grupo) está en la etiqueta `agora-final`.
+Despliegue: GitHub Pages en cada push a `main`, dominio votagora.es. Reglas de Firestore: `npx firebase deploy --only firestore:rules`.
+
+Versiones anteriores del repo: `agora-final` (Ágora, decisiones en grupo) y `carrera-v2` (el juego de carrera política).

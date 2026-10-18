@@ -26,8 +26,6 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
-      # Pages no sabe de rutas: cualquier 404 devuelve la app (las rutas van con #, pero por si acaso)
-      - run: cp dist/index.html dist/404.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

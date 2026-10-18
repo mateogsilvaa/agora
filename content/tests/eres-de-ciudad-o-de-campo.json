@@ -1,0 +1,47 @@
+{
+  "slug": "eres-de-ciudad-o-de-campo",
+  "order": 4,
+  "category": "mapa",
+  "title": "¿Eres de ciudad o tu cerebro pide campo?",
+  "seoTitle": "¿Eres de ciudad o de campo? Test rápido para saber dónde deberías vivir",
+  "description": "Ruido, vecinos, distancias y silencios. 16 tarjetas para descubrir si eres urbanita de verdad o si tu cerebro lleva años pidiendo una casa en el pueblo.",
+  "intro": [
+    "Desde que se puede teletrabajar, media España fantasea con irse al pueblo y la otra media no aguantaría ni un fin de semana sin un supermercado abierto.",
+    "Este test te dice dónde encajas: en pleno centro, en un barrio con jardín, en un pueblo con fibra o directamente en una cabaña sin cobertura."
+  ],
+  "faq": [
+    { "q": "¿Cuántos resultados hay?", "a": "Cinco: Urbanita irredento, Barrio con terraza, Pueblo con fibra, Rural de verdad y Ermitaño de cabaña." },
+    { "q": "¿Sirve para decidir si me mudo?", "a": "Sirve para pensarlo. Para decidirlo, mejor pasa antes un invierno entero en el sitio." }
+  ],
+  "headline": "Según Votágora, soy {pct}% {name}",
+  "color": "#2d4a22",
+  "ink": "#f2eedf",
+  "agree": "Sí",
+  "disagree": "No",
+  "minutes": 1,
+  "profiles": [
+    { "id": "urbanita", "name": "Urbanita irredento", "tagline": "y me pongo nervioso si no oigo una moto", "description": "El ruido te relaja, el anonimato te da libertad y no concibes vivir a más de cinco minutos de un sitio abierto a las once de la noche.", "color": "#3a3f5c" },
+    { "id": "barrio", "name": "Barrio con terraza", "tagline": "y mi idea de naturaleza es regar el potus", "description": "Ciudad sí, pero con tu panadería, tu bar y tus vecinos de siempre. Lo mejor de los dos mundos, sin salir del código postal.", "color": "#7a5a2f" },
+    { "id": "fibra", "name": "Pueblo con fibra", "tagline": "y teletrabajo desde una era con wifi", "description": "Quieres silencio y verde, pero con buena conexión y una ciudad a menos de una hora. Neorrural con cargador.", "color": "#4f7a3a" },
+    { "id": "rural", "name": "Rural de verdad", "tagline": "y sé cuándo va a llover mirando las nubes", "description": "Huerta, animales y vecinos que te traen huevos. La ciudad te parece un sitio para ir al médico y volver.", "color": "#5b6b2a" },
+    { "id": "ermitano", "name": "Ermitaño de cabaña", "tagline": "y debería exiliarme a una cabaña en Huesca", "description": "Te sobra todo el mundo. Lo tuyo es un sitio sin cobertura, con leña y con el pueblo más cercano a una hora andando.", "color": "#3b2f25" }
+  ],
+  "questions": [
+    { "id": "u1", "text": "El silencio absoluto me pone nervioso.", "w": { "urbanita": 2, "barrio": 1, "rural": -1, "ermitano": -2 } },
+    { "id": "u2", "text": "Prefiero el bullicio a la tranquilidad absoluta.", "w": { "urbanita": 2, "barrio": 1, "fibra": -1, "ermitano": -2 } },
+    { "id": "u3", "text": "Me gustaría tener gallinas.", "w": { "rural": 2, "fibra": 1, "ermitano": 1, "urbanita": -2 } },
+    { "id": "u4", "text": "Necesito tener un supermercado a menos de cinco minutos.", "w": { "urbanita": 2, "barrio": 2, "rural": -1, "ermitano": -2 } },
+    { "id": "u5", "text": "Me encanta que nadie me conozca por la calle.", "w": { "urbanita": 2, "ermitano": 1, "barrio": -1, "rural": -2 } },
+    { "id": "u6", "text": "Podría vivir sin ir a un concierto, un museo o un estreno.", "w": { "rural": 2, "ermitano": 2, "fibra": 1, "urbanita": -2 } },
+    { "id": "u7", "text": "Si pudiera teletrabajar siempre, me iría a un pueblo.", "w": { "fibra": 2, "rural": 1, "ermitano": 1, "urbanita": -2 } },
+    { "id": "u8", "text": "Saludar a todo el mundo por la calle me parece agotador.", "w": { "urbanita": 2, "ermitano": 2, "rural": -2, "barrio": -1 } },
+    { "id": "u9", "text": "Me gusta saber cómo se llama el del bar.", "w": { "barrio": 2, "rural": 2, "fibra": 1, "urbanita": -1 } },
+    { "id": "u10", "text": "Coger el coche para todo no me importa.", "w": { "fibra": 2, "rural": 2, "ermitano": 1, "urbanita": -2, "barrio": -1 } },
+    { "id": "u11", "text": "Un fin de semana sin planes es un fin de semana perdido.", "w": { "urbanita": 2, "barrio": 1, "ermitano": -2 } },
+    { "id": "u12", "text": "Me relaja más cortar leña que ir al gimnasio.", "w": { "ermitano": 2, "rural": 2, "urbanita": -2 } },
+    { "id": "u13", "text": "Sin buena conexión a internet no podría vivir.", "w": { "urbanita": 1, "barrio": 1, "fibra": 2, "ermitano": -2 } },
+    { "id": "u14", "text": "Las fiestas del pueblo son lo mejor del año.", "w": { "rural": 2, "fibra": 1, "barrio": 1, "ermitano": -1 } },
+    { "id": "u15", "text": "Me agobia ver mucha gente junta.", "w": { "ermitano": 2, "rural": 1, "fibra": 1, "urbanita": -2 } },
+    { "id": "u16", "text": "Quiero ver las estrellas desde mi ventana.", "w": { "ermitano": 2, "rural": 2, "fibra": 1, "urbanita": -1 } }
+  ]
+}
