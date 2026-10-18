@@ -7,7 +7,17 @@
   "ley_vivienda_vaciada": "Hay una ley de vivienda que ninguna comunidad aplica.",
   "ley_vivienda_aprobada": "Hay una ley de vivienda que limita los alquileres en zonas tensionadas.",
   "recorte_sanitario": "Las transferencias sanitarias a las comunidades se recortaron un 6 %.",
+<<<<<<< HEAD
   "solar_vendido": "Un ayuntamiento vendió a una promotora el solar que pedía una cooperativa.",
   "cesion_cooperativa": "Hay cooperativas de vivienda en suelo público cedido por 75 años.",
   "residencias_sin_inspeccion": "Las residencias grandes de una comunidad no tienen inspección obligatoria."
+=======
+  "autopistas_rescatadas": "El Estado rescató nueve autopistas de peaje y pagó a los bancos al cien por cien.",
+  "autopistas_quebradas": "Nueve autopistas de peaje se liquidaron sin rescate.",
+  "puertas_giratorias_cerradas": "Un alto cargo no puede trabajar cinco años en el sector que reguló.",
+  "indulto_concedido": "Un exalcalde condenado por malversación fue indultado un 31 de diciembre.",
+  "dependencia_recortada": "El plan de dependencia se recortó para cumplir la senda de déficit.",
+  "exceso_campana_declarado": "Un partido declaró que gastó en campaña más de lo permitido.",
+  "agendas_publicas": "Las agendas de los altos cargos se publican completas."
+>>>>>>> refs/heads/claude/hungry-jang-520d5b
 }
