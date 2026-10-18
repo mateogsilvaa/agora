@@ -35,5 +35,22 @@
   "amigo": "Un amigo de la facultad",
   "pareja": "Tu pareja",
   "productora": "Producción de Informativos",
-  "consultora": "Consultora de Asuntos Públicos"
+  "consultora": "Socio de una Consultora",
+  "vicerrectorado": "Vicerrectorado de Estudiantes",
+  "delegacion": "Delegación de Alumnos",
+  "decanato": "Decanato",
+  "casero": "Tu casero",
+  "encargado": "Encargado del Bar",
+  "alcalde_pueblo": "Alcaldía de tu Pueblo",
+  "tesoreria": "Tesorería de la Agrupación",
+  "comision_garantias": "Comisión de Garantías",
+  "afiliada_veterana": "Afiliada desde 1977",
+  "colectivo_barrio": "Colectivo Vecinal del Barrio",
+  "jefe_campana": "Dirección de Campaña",
+  "policia_local": "Jefatura de Policía Local",
+  "secretaria_municipal": "Secretaría General del Ayuntamiento",
+  "cooperativa": "Cooperativa de Vivienda",
+  "letrado": "Letrado de la Comisión",
+  "mesa": "Mesa del Parlamento",
+  "diputacion": "Presidencia de la Diputación"
 }
