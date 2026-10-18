@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@theme {
+  --color-papel: #F2EAD8;
+  --color-papel-2: #E6DBC3;
+  --color-tinta: #1C1A17;
+  --color-tinta-suave: #5B544A;
+  --color-tampon: #B3261E;
+  --color-boe: #24476B;
+  --color-urna: #2F6B4F;
+  --color-portada: #C08A2E;
+  --color-sumario: #8C8577;
+  --color-chat: #DCF8C6;
+  --font-titular: "Playfair Display", Georgia, serif;
+  --font-texto: "Source Serif 4", Georgia, serif;
+  --font-ui: Inter, system-ui, sans-serif;
+  --font-cifra: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* Noche de escrutinio */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-papel: #16140F;
+    --color-papel-2: #24211A;
+    --color-tinta: #ECE3CF;
+    --color-tinta-suave: #A89F8E;
+    --color-sumario: #5E584D;
+    --color-chat: #1F3B2C;
+  }
+}
+:root[data-theme="dark"] {
+  --color-papel: #16140F;
+  --color-papel-2: #24211A;
+  --color-tinta: #ECE3CF;
+  --color-tinta-suave: #A89F8E;
+  --color-sumario: #5E584D;
+  --color-chat: #1F3B2C;
+}
+
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--color-papel);
+  color: var(--color-tinta);
+  font-family: var(--font-texto);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+#app { min-height: 100dvh; }
+
+.papel {
+  background-color: var(--color-papel-2);
+  background-image: radial-gradient(rgba(0,0,0,.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+.regla { border-top: 3px double var(--color-tinta); }
+.tampon {
+  font-family: var(--font-titular);
+  color: var(--color-tampon);
+  border: 3px solid var(--color-tampon);
+  letter-spacing: .15em;
+  transform: rotate(-6deg);
+  display: inline-block;
+  padding: 0 .4em;
+  opacity: .85;
+}
+@keyframes latido { 50% { opacity: .35; } }
+.peligro { animation: latido 1s infinite; }
+@media (prefers-reduced-motion: reduce) { .peligro { animation: none; } }
+
+.streamer { font-size: 120%; }

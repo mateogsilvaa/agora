@@ -1,51 +1,18 @@
-// Service worker de Ágora: abre sin red (la carcasa) y gestiona los clics en los avisos.
-// Firestore va por su cuenta (otro dominio), aquí solo se cachea la propia web.
-const CACHE = 'agora-v4';
-
-self.addEventListener('install', e => {
-    e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/', '/manifest.webmanifest', '/icons/icon-192.png'])));
-    self.skipWaiting();
-});
-
-self.addEventListener('activate', e => {
-    e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))));
-    self.clients.claim();
-});
-
+// Primero red, si no hay red tira de caché: el juego entero se puede jugar sin conexión.
+const CACHE = 'votagora-v1';
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', e => e.waitUntil(
+  caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())
+));
 self.addEventListener('fetch', e => {
-    const req = e.request;
-    const url = new URL(req.url);
-    if (req.method !== 'GET' || url.origin !== location.origin) return;
-    // Páginas: red primero (siempre la última versión), caché si no hay conexión
-    if (req.mode === 'navigate') {
-        e.respondWith(fetch(req).then(r => { caches.open(CACHE).then(c => c.put('/', r.clone())); return r; }).catch(() => caches.match('/')));
-        return;
-    }
-    // Recursos con hash en el nombre: caché primero
-    e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(r => {
-        if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
-        return r;
-    })));
-});
-
-// Avisos push que manda el worker de GitHub Actions: { title, body, url, tag }
-self.addEventListener('push', e => {
-    let d = {};
-    try { d = e.data ? e.data.json() : {}; } catch { d = { body: e.data?.text() }; }
-    e.waitUntil(self.registration.showNotification(d.title || 'Ágora', {
-        body: d.body || '',
-        tag: d.tag,
-        data: { url: d.url || '/' },
-        icon: '/icons/icon-192.png',
-        badge: '/icons/icon-192.png',
-    }));
-});
-
-self.addEventListener('notificationclick', e => {
-    e.notification.close();
-    const url = e.notification.data?.url || '/';
-    e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
-        for (const c of list) if ('focus' in c) { c.navigate(url); return c.focus(); }
-        return self.clients.openWindow(url);
-    }));
+  const { request } = e;
+  if (request.method !== 'GET' || !request.url.startsWith('http')) return;
+  if (request.url.includes('firestore') || request.url.includes('googleapis.com/identitytoolkit')) return;
+  e.respondWith(
+    fetch(request).then(res => {
+      const copy = res.clone();
+      caches.open(CACHE).then(c => c.put(request, copy));
+      return res;
+    }).catch(() => caches.match(request).then(r => r || caches.match('/')))
+  );
 });
