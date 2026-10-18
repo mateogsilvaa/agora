@@ -1,5 +1,5 @@
 rules_version = '2';
-service cloud_firestore {
+service cloud.firestore {
   match /databases/{database}/documents {
     // Partidas terminadas: cada jugador escribe las suyas una vez y no se tocan más.
     match /runs/{runId} {
