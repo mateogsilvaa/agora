@@ -35,8 +35,7 @@
   "amigo": "Un amigo de la facultad",
   "pareja": "Tu pareja",
   "productora": "Producción de Informativos",
-<<<<<<< HEAD
-  "consultora": "Socio de una Consultora",
+  "consultora": "Consultora de Asuntos Públicos",
   "vicerrectorado": "Vicerrectorado de Estudiantes",
   "delegacion": "Delegación de Alumnos",
   "decanato": "Decanato",
@@ -53,10 +52,7 @@
   "cooperativa": "Cooperativa de Vivienda",
   "letrado": "Letrado de la Comisión",
   "mesa": "Mesa del Parlamento",
-  "diputacion": "Presidencia de la Diputación"
-=======
-  "consultora": "Consultora de Asuntos Públicos",
-  "letrado": "Letrado de la Comisión",
+  "diputacion": "Presidencia de la Diputación",
   "patronal": "Organización Empresarial",
   "inspeccion_trabajo": "Inspección de Trabajo",
   "tribunal_cuentas": "Tribunal de Cuentas",
@@ -70,5 +66,4 @@
   "representacion_ue": "Representación Permanente ante la UE",
   "direccion_campana": "Dirección de Campaña",
   "tesoreria_partido": "Tesorería del Partido"
->>>>>>> refs/heads/claude/hungry-jang-520d5b
 }
