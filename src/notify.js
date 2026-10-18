@@ -3,7 +3,7 @@
 // app cerrada del todo haría falta Cloud Messaging + Cloud Functions (plan Blaze).
 import { t } from './i18n.js';
 import { h, busy, toast } from './ui.js';
-import { watchNews } from './data.js';
+import { watchNews, savePushSub } from './data.js';
 import { headline } from './pages/paper.js';
 
 const KEY = 'agora.seen';
@@ -28,6 +28,30 @@ export function unreadCount(gid, news, uid) {
 }
 
 export const canNotify = () => 'Notification' in window;
+
+// ---------- Web Push (avisos con la app cerrada) ----------
+// Los manda el worker de GitHub Actions (worker/avisos.mjs) cada pocos minutos.
+const VAPID = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+let pushUid = null;
+export const setPushUser = uid => { pushUid = uid; };
+
+function keyBytes(b64) {
+    const pad = '='.repeat((4 - (b64.length % 4)) % 4);
+    const raw = atob((b64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
+    return Uint8Array.from(raw, c => c.charCodeAt(0));
+}
+
+// Se suscribe (o renueva la suscripción) y la guarda en el perfil. Sin service worker (modo dev) no hace nada.
+export async function syncPush() {
+    if (!pushUid || !VAPID || !canNotify() || Notification.permission !== 'granted' || !('PushManager' in window)) return;
+    try {
+        // El worker se registra al cargar la página: lo esperamos un poco (en dev no existe y no llega nunca)
+        const reg = await Promise.race([navigator.serviceWorker?.ready, new Promise(r => setTimeout(() => r(null), 8000))]);
+        if (!reg) return;
+        const sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(VAPID) });
+        await savePushSub(pushUid, sub, document.documentElement.lang);
+    } catch (e) { console.warn('push', e); }
+}
 
 async function show(title, body, url, tag) {
     if (!canNotify() || Notification.permission !== 'granted') return false;
@@ -98,7 +122,7 @@ export function notifButton() {
     const btn = h('button.btn', {
         onclick: () => busy(btn, async () => {
             const p = await Notification.requestPermission();
-            if (p === 'granted') { btn.replaceWith(h('p.note.blue', '✓ ' + t('notifsOn'))); show('Ágora', t('notifsOn'), '/', 'hello'); }
+            if (p === 'granted') { btn.replaceWith(h('p.note.blue', '✓ ' + t('notifsOn'))); show('Ágora', t('notifsOn'), '/', 'hello'); syncPush(); }
             else toast(t('notifsBlocked'), true);
         }),
     }, t('enableNotifs'));

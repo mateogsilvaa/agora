@@ -35,6 +35,14 @@ export async function ensureUser(user, name) {
     return { id: user.uid, ...data };
 }
 
+// Suscripciones de Web Push: una por navegador/dispositivo, con id = hash del endpoint
+export async function savePushSub(uid, sub, lang) {
+    const json = sub.toJSON();
+    const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(json.endpoint));
+    const id = [...new Uint8Array(hash)].slice(0, 16).map(b => b.toString(16).padStart(2, '0')).join('');
+    await setDoc(ref('users', uid, 'push', id), { endpoint: json.endpoint, keys: json.keys, lang, ua: navigator.userAgent.slice(0, 120), updatedAt: serverTimestamp() });
+}
+
 export function watchUser(uid, cb) {
     return onSnapshot(ref('users', uid), s => cb(s.exists() ? withId(s) : null));
 }

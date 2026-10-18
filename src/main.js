@@ -4,7 +4,7 @@ import { auth, configured } from './firebase.js';
 import { t, lang, setLang } from './i18n.js';
 import { h, mount, loading, toast } from './ui.js';
 import { watchUser, ensureUser, pruneGroups, getGroups, peekInvite, joinGroup } from './data.js';
-import { watchAll, onFeed, feedItems, unreadTotal, markAllSeen, newsUrl, notifButton } from './notify.js';
+import { watchAll, onFeed, feedItems, unreadTotal, markAllSeen, newsUrl, notifButton, setPushUser, syncPush } from './notify.js';
 import { headline } from './pages/paper.js';
 import { setupPwa, canInstall, promptInstall } from './install.js';
 import { renderAuth } from './pages/auth.js';
@@ -157,6 +157,9 @@ if (configured) {
         header(); render();
         if (!user) return;
         await ensureUser(user, sessionStorage.getItem('agora.pendingName'));
+        // Avisos push: si ya los tenía activados en este navegador, renueva la suscripción
+        setPushUser(user.uid);
+        syncPush();
         sessionStorage.removeItem('agora.pendingName');
         let pruned = false, watchedKey = null;
         unsubUser = watchUser(user.uid, async me => {

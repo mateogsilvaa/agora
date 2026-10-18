@@ -48,6 +48,14 @@ service cloud.firestore {
         && validName(data().name, 40);
     }
 
+    // Suscripciones de avisos push: solo las ve y las toca su dueño (el worker entra con permisos de admin)
+    match /users/{uid}/push/{sid} {
+      allow read, delete: if signedIn() && me() == uid;
+      allow create, update: if signedIn() && me() == uid
+        && data().endpoint is string && data().endpoint.size() < 1000
+        && data().keys is map;
+    }
+
     // ---------- Invitaciones ----------
     match /invites/{code} {
       // Público: así el enlace de invitación enseña el nombre del grupo antes de crear la cuenta

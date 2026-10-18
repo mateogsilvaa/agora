@@ -1,6 +1,6 @@
 // Service worker de Ágora: abre sin red (la carcasa) y gestiona los clics en los avisos.
 // Firestore va por su cuenta (otro dominio), aquí solo se cachea la propia web.
-const CACHE = 'agora-v3';
+const CACHE = 'agora-v4';
 
 self.addEventListener('install', e => {
     e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/', '/manifest.webmanifest', '/icons/icon-192.png'])));
@@ -26,6 +26,19 @@ self.addEventListener('fetch', e => {
         if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
         return r;
     })));
+});
+
+// Avisos push que manda el worker de GitHub Actions: { title, body, url, tag }
+self.addEventListener('push', e => {
+    let d = {};
+    try { d = e.data ? e.data.json() : {}; } catch { d = { body: e.data?.text() }; }
+    e.waitUntil(self.registration.showNotification(d.title || 'Ágora', {
+        body: d.body || '',
+        tag: d.tag,
+        data: { url: d.url || '/' },
+        icon: '/icons/icon-192.png',
+        badge: '/icons/icon-192.png',
+    }));
 });
 
 self.addEventListener('notificationclick', e => {
