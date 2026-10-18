@@ -16,6 +16,7 @@ export function markSeen(gid, news) {
     if (last === seen[gid]) return;
     seen[gid] = last;
     try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch { /* sin storage */ }
+    emit();
 }
 
 export const hasSeenPaper = gid => readSeen()[gid] !== undefined;
@@ -38,13 +39,45 @@ async function show(title, body, url, tag) {
     } catch { return false; }
 }
 
+// ---------- Bandeja de avisos (la campana de la cabecera) ----------
+// Últimas noticias de todos tus grupos; "sin leer" = posteriores a la última vez que miraste.
+const feed = {};
+let names = {}, myId = null;
+const listeners = new Set();
+export const onFeed = cb => { listeners.add(cb); return () => listeners.delete(cb); };
+const emit = () => listeners.forEach(cb => cb());
+
+export function feedItems() {
+    const seen = readSeen();
+    return Object.entries(feed)
+        .flatMap(([gid, list]) => list.map(n => ({ ...n, gid, group: names[gid] || '', unread: n.by !== myId && ms(n) > (seen[gid] ?? Infinity) })))
+        .sort((a, b) => ms(b) - ms(a))
+        .slice(0, 20);
+}
+export const unreadTotal = () => feedItems().filter(n => n.unread).length;
+
+export function markAllSeen() {
+    const seen = readSeen();
+    for (const [gid, list] of Object.entries(feed)) seen[gid] = Math.max(seen[gid] || 0, ...list.map(ms));
+    try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch { /* sin storage */ }
+    emit();
+}
+
+export const newsUrl = n => n.data?.vid ? `#/g/${n.gid}/v/${n.data.vid}` : `#/g/${n.gid}/paper`;
+
 // Escucha las últimas noticias de cada grupo del usuario
 let unsubs = [];
 export function watchAll(me, groupNames) {
     unsubs.forEach(u => u());
+    names = groupNames; myId = me.id;
+    for (const k of Object.keys(feed)) if (!me.groups.includes(k)) delete feed[k];
     unsubs = me.groups.map(gid => {
         let first = true;
-        return watchNews(gid, 5, (all, added) => {
+        return watchNews(gid, 15, (all, added) => {
+            feed[gid] = all.filter(n => n.at);
+            // Primera vez que vemos este grupo: lo de antes no cuenta como nuevo
+            if (first && readSeen()[gid] === undefined) markSeen(gid, feed[gid]);
+            emit();
             if (first) { first = false; return; }
             for (const n of added) {
                 if (n.by === me.id || !n.at) continue;

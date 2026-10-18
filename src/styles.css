@@ -485,6 +485,54 @@ body { overflow-x: clip; }
 .chip-x { background: none; border: 0; font-size: 20px; line-height: 1; color: var(--muted); padding: 4px 6px; cursor: pointer; }
 .logo.mini { height: 30px; padding: 0 9px; font-size: 18px; }
 
+/* ---------- Campana de avisos ---------- */
+.bell > summary { width: 34px; height: 34px; justify-content: center; border-radius: 50%; }
+.bell > summary:hover, .bell[open] > summary { background: var(--note); }
+.bell-ico { position: relative; display: grid; }
+.bell-ico svg { width: 21px; height: 21px; }
+.bell-count { position: absolute; top: -6px; right: -8px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: var(--red); color: #fff; font: 700 9px/16px var(--mono); font-style: normal; text-align: center; }
+.bell-pop { width: min(340px, calc(100vw - 24px)); max-height: 70vh; overflow-y: auto; padding: 0; }
+.bell-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--ink); position: sticky; top: 0; background: var(--panel); }
+.bell-head b { font: 700 12px var(--cond); text-transform: uppercase; letter-spacing: .08em; }
+.menu-pop a.bell-item { display: grid; gap: 2px; padding: 10px 14px; border-bottom: 1px solid var(--hair2); font-weight: 400; }
+.bell-item.unread { background: var(--acc-bg); box-shadow: inset 3px 0 0 var(--accent); }
+.bell-group { font: 700 9px var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+.bell-text { font-size: 13px; line-height: 1.35; }
+.menu-pop a.bell-item:hover .bell-group { color: var(--bg); }
+.bell-foot { padding: 10px 14px; }
+.bell-foot .note { margin: 0; font-size: 12px; }
+.bell-foot .btn { width: 100%; }
+
+/* ---------- Tutorial y test "Ayúdame a elegir" (ventanas) ---------- */
+.tutorial, .wizard { max-width: 480px; margin: 0 auto; }
+.wizard { max-width: 560px; }
+@media (min-width: 700px) {
+    .install-sheet:has(.tutorial, .wizard) { align-items: center; }
+    .install-card.tutorial, .install-card.wizard { border: 1px solid var(--ink); border-top-width: 4px; }
+}
+.tut-art { min-height: 160px; display: grid; place-items: center; border: 1px dashed var(--input); padding: 16px; background: var(--panel); }
+.tut-art .hemi-wrap { width: 100%; max-width: 260px; margin: 0; }
+.tut-yn { display: flex; gap: 22px; font: 800 34px/1 var(--cond); }
+.tut-yn span:last-child { color: var(--dim); }
+.tut-paper { width: 220px; display: grid; gap: 7px; background: #f4efe3; border-top: 3px double #1b1a17; padding: 10px 12px 12px; font-family: 'Old Standard TT', Georgia, serif; color: #1b1a17; }
+.tut-paper small { font: 700 9px var(--mono); letter-spacing: .16em; text-align: center; }
+.tut-paper b { font-size: 17px; line-height: 1.15; }
+.tut-paper i { display: block; height: 5px; background: #d6cdb8; }
+.tut-paper i.short { width: 60%; }
+.tut-link { font: 700 14px var(--mono); border: 1px solid var(--ink); padding: 10px 14px; background: var(--bg); }
+.tut-dots { display: flex; gap: 4px; justify-content: center; }
+/* Área de toque amplia, punto pequeño dentro */
+.tut-dots button { width: 26px; height: 26px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+.tut-dots button::before { content: ''; width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--ink); transition: background .15s, transform .15s; }
+.tut-dots button.on::before { background: var(--ink); transform: scale(1.15); }
+.help-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--input); background: var(--panel); font: 700 14px var(--mono); cursor: pointer; flex-shrink: 0; }
+.help-btn:hover { background: var(--ink); color: var(--bg); }
+.wiz-bar { height: 3px; background: var(--hair); }
+.wiz-bar i { display: block; height: 100%; background: var(--accent); transition: width .25s; }
+.wiz-result { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--ink); }
+.wiz-result li { padding: 10px 0 10px 22px; border-bottom: 1px dashed var(--input); position: relative; font-size: 14px; }
+.wiz-result li::before { content: '>'; position: absolute; left: 4px; color: var(--accent); font-family: var(--mono); }
+
 /* ---------- Pantallas y modo app ---------- */
 main.nav-in > * { animation: navIn .18s ease-out; }
 @keyframes navIn { from { opacity: 0; transform: translateY(4px); } }

@@ -4,7 +4,8 @@ import { auth, configured } from './firebase.js';
 import { t, lang, setLang } from './i18n.js';
 import { h, mount, loading, toast } from './ui.js';
 import { watchUser, ensureUser, pruneGroups, getGroups, peekInvite, joinGroup } from './data.js';
-import { watchAll } from './notify.js';
+import { watchAll, onFeed, feedItems, unreadTotal, markAllSeen, newsUrl, notifButton } from './notify.js';
+import { headline } from './pages/paper.js';
 import { setupPwa, canInstall, promptInstall } from './install.js';
 import { renderAuth } from './pages/auth.js';
 import { renderHome } from './pages/home.js';
@@ -38,6 +39,9 @@ function header() {
         onclick: () => { if (l !== lang) { setLang(l); header(); render(); } },
     }, l.toUpperCase())));
 
+    // Campana: novedades de todos tus grupos
+    const bell = app.me ? bellMenu() : null;
+
     const account = app.me ? h('details.menu.account',
         h('summary', { title: app.me.name }, h('span.avatar', app.me.name.slice(0, 1).toUpperCase())),
         h('div.menu-pop.right',
@@ -51,8 +55,35 @@ function header() {
         switcher,
         h('span.nav-sp'),
         langs,
+        bell,
         account));
 }
+
+const BELL = 'M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0';
+function bellMenu() {
+    const items = feedItems();
+    const unread = items.filter(n => n.unread).length;
+    const ico = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    ico.setAttribute('viewBox', '0 0 24 24');
+    ico.innerHTML = `<path d="${BELL}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>`;
+    const menu = h('details.menu.bell',
+        h('summary', { 'aria-label': t('notifications') }, h('span.bell-ico', ico, unread ? h('i.bell-count', unread > 9 ? '9+' : unread) : null)),
+        h('div.menu-pop.right.bell-pop',
+            h('div.bell-head', h('b', t('notifications')), unread ? h('button.link', { onclick: () => markAllSeen() }, t('markRead')) : null),
+            items.length
+                ? items.map(n => h(`a.bell-item${n.unread ? '.unread' : ''}`, { href: newsUrl(n) },
+                    h('span.bell-group', n.group), h('span.bell-text', headline(n))))
+                : h('p.empty', { style: { padding: '12px 14px' } }, t('noNotifs')),
+            h('div.bell-foot', notifButton())));
+    // Al abrir la bandeja se da todo por leído
+    menu.addEventListener('toggle', () => { if (!menu.open && unreadTotal()) markAllSeen(); });
+    return menu;
+}
+
+// Las novedades repintan la cabecera (salvo con un menú abierto, para no cerrarlo de golpe)
+let headerPending = false;
+onFeed(() => { if (document.querySelector('details.menu[open]')) headerPending = true; else header(); });
+document.addEventListener('toggle', e => { if (headerPending && e.target.matches?.('details.menu') && !e.target.open) { headerPending = false; header(); } }, true);
 
 // Los menús desplegables se cierran al tocar fuera o al elegir algo
 document.addEventListener('click', e => {
