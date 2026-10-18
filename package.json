@@ -1,5 +1,5 @@
 {
-  "name": "votagora",
+  "name": "agora",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -7,23 +7,15 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run",
-    "og": "vite-node scripts/og.ts",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "test": "node --test \"test/*.test.js\"",
+    "deploy": "vite build && firebase deploy"
   },
   "dependencies": {
     "firebase": "^11.10.0"
   },
   "devDependencies": {
-    "@resvg/resvg-js": "^2.6.2",
-    "@sveltejs/vite-plugin-svelte": "^5.1.1",
-    "@tailwindcss/vite": "^4.3.3",
-    "svelte": "^5.57.2",
-    "svelte-check": "^4.7.7",
-    "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.3",
-    "vite": "^6.4.4",
-    "vite-node": "^3.2.4",
-    "vitest": "^3.2.7"
+    "firebase-admin": "^13.10.0",
+    "vite": "^6.3.5",
+    "web-push": "^3.6.7"
   }
 }

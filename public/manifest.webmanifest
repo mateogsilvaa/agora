@@ -1,15 +1,23 @@
 {
-  "name": "Votágora · Tests para compartir",
-  "short_name": "Votágora",
-  "start_url": "/",
+  "id": "/",
+  "name": "Ágora",
+  "short_name": "Ágora",
+  "description": "Decisiones de grupo como en un parlamento",
+  "start_url": "/?source=app",
+  "scope": "/",
   "display": "standalone",
-  "orientation": "any",
-  "background_color": "#16130f",
-  "theme_color": "#16130f",
+  "orientation": "portrait",
+  "background_color": "#faf9f7",
+  "theme_color": "#faf9f7",
   "lang": "es",
+  "categories": ["productivity", "social"],
   "icons": [
     { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
     { "src": "/icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "Mis grupos", "url": "/#/", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
   ]
 }
