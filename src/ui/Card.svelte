@@ -22,7 +22,7 @@
     pressed = i;
     pressedAt = performance.now();
     onpreview(i);
-    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+    try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); } catch { /* puntero ya liberado */ }
   }
   function up(e: PointerEvent, i: number) {
     if (pressed !== i) return;
